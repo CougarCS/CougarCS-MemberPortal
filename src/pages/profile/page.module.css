@@ -1,0 +1,142 @@
+.page {
+  min-height: 100vh;
+  background: var(--light-grey);
+  display: flex;
+  flex-direction: column;
+}
+
+.pageHeader {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 0.2rem;
+  letter-spacing: 0.01em;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: var(--cougar-red);
+  margin: 0;
+  font-weight: 500;
+}
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  padding: 1.5rem 2rem 5rem 0;
+  gap: 0;
+}
+
+.sidebar {
+  position: sticky;
+  top: 8rem;
+  flex: 0 0 200px;
+  margin-left: 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.navItem {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text);
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.navItem:last-child {
+  border-bottom: none;
+}
+
+.navItem:hover {
+  background: var(--light-grey);
+  color: var(--text-h);
+}
+
+.navItemActive {
+  color: var(--cougar-red);
+  font-weight: 600;
+  border-left-color: var(--cougar-red);
+  background: var(--cougar-red-light);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-left: 1.5rem;
+}
+
+@media (max-width: 820px) {
+  .body {
+    flex-direction: column;
+    padding: 1rem 1rem 4rem;
+  }
+
+  .sidebar {
+    position: static;
+    flex: none;
+    width: 100%;
+    margin-left: 0;
+    margin-bottom: 1rem;
+  }
+
+  .nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .navItem {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    border-right: 1px solid var(--border);
+    flex: 1 0 auto;
+    text-align: center;
+    font-size: 0.75rem;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .navItemActive {
+    border-bottom-color: var(--cougar-red);
+    border-left: none;
+  }
+
+  .content {
+    margin-left: 0;
+  }
+}
