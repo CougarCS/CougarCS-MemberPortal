@@ -29,6 +29,11 @@
   cursor: pointer;
   padding: 0;
   outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.toggleCompany {
+  background-color: #9ca3af;
 }
 
 .toggle:focus-visible {

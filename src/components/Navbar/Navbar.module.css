@@ -151,4 +151,8 @@
 .mobileSignOut {
   color: var(--cougar-red);
   background-color: rgba(200, 15, 46, 0.05);
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
 }

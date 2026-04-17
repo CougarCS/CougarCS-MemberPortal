@@ -213,6 +213,16 @@
   outline-offset: 3px;
 }
 
+.submitBtnCompany {
+  background-color: #9ca3af;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.submitBtnCompany:hover {
+  background-color: #6b7280;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .footer {
   margin-top: 1.25rem;
   text-align: center;
@@ -245,6 +255,19 @@
 
 .switchLink:hover {
   text-decoration: underline;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: var(--cougar-red);
+  text-align: center;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 @media (max-width: 899px) {

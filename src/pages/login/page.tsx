@@ -1,17 +1,38 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { AuthLayout, authStyles } from '../../components/AuthLayout';
 import type { AuthMode } from '../../components/AuthLayout';
+import { supabase } from '../../lib/supabase';
 import styles from './page.module.css';
 
 export const LoginPage = () => {
   const [mode, setMode] = useState<AuthMode>('member');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: implement auth
-    console.log('Login attempt', { mode, email, password });
+    setError('');
+
+    if (mode === 'company') {
+      setError('Company login is not yet available.');
+      return;
+    }
+
+    setLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      setError('Invalid email or password.');
+      setLoading(false);
+      return;
+    }
+
+    navigate('/profile');
   };
 
   return (
@@ -33,7 +54,7 @@ export const LoginPage = () => {
           aria-checked={mode === 'member'}
           className={`${styles.toggle} ${
             mode === 'member' ? styles.toggleRight : styles.toggleLeft
-          }`}
+          } ${mode === 'company' ? styles.toggleCompany : ''}`}
           onClick={() => setMode(mode === 'company' ? 'member' : 'company')}
         >
           <span className={styles.toggleThumb} />
@@ -78,8 +99,14 @@ export const LoginPage = () => {
           />
         </div>
 
-        <button type="submit" className={authStyles.submitBtn}>
-          Continue
+        {error && <p className={authStyles.error}>{error}</p>}
+
+        <button
+          type="submit"
+          className={`${authStyles.submitBtn} ${mode === 'company' ? authStyles.submitBtnCompany : ''}`}
+          disabled={loading}
+        >
+          {loading ? 'Signing in...' : 'Continue'}
         </button>
       </form>
 

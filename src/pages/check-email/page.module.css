@@ -1,0 +1,27 @@
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.note {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--neutral-grey);
+}
+
+.noteLink {
+  color: var(--cougar-red);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.noteLink:hover {
+  text-decoration: underline;
+}

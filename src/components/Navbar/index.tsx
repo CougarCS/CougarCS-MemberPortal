@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
+import { useAuth } from '../../context/AuthContext';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
@@ -10,6 +11,13 @@ const NAV_LINKS = [
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
+  };
 
   return (
     <div className={styles.navbar}>
@@ -33,9 +41,9 @@ export const Navbar = () => {
           ))}
         </nav>
 
-        <Link to="/login" className={styles.signOutBtn}>
+        <button type="button" className={styles.signOutBtn} onClick={handleSignOut}>
           Sign Out
-        </Link>
+        </button>
 
         <button
           type="button"
@@ -61,13 +69,16 @@ export const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <Link
-            to="/login"
+          <button
+            type="button"
             className={`${styles.mobileMenuItem} ${styles.mobileSignOut}`}
-            onClick={() => setMenuOpen(false)}
+            onClick={() => {
+              setMenuOpen(false);
+              handleSignOut();
+            }}
           >
             Sign Out
-          </Link>
+          </button>
         </nav>
       )}
     </div>
