@@ -1,39 +1,43 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+import { MONTHS } from './constants';
 
 interface Props {
+  major: string;
   graduationYear: string;
   graduationMonth: string;
+  gpa: string;
+  onMajor: (v: string) => void;
   onGraduationYear: (v: string) => void;
   onGraduationMonth: (v: string) => void;
+  onGpa: (v: string) => void;
 }
 
-export const QualificationsSection = ({
+export const EducationSection = ({
+  major,
   graduationYear,
   graduationMonth,
+  gpa,
+  onMajor,
   onGraduationYear,
   onGraduationMonth,
+  onGpa,
 }: Props) => (
   <SectionShell
-    id="qualifications"
-    title="Qualifications"
-    desc="Share your qualifications for better job matching."
+    id="education"
+    title="Education"
+    desc="Your degree, major, and expected graduation."
   >
+    <div className={styles.fieldGroup}>
+      <label className={styles.label}>Major</label>
+      <input
+        className={styles.input}
+        value={major}
+        onChange={(e) => onMajor(e.target.value)}
+        placeholder="e.g. Computer Science"
+      />
+    </div>
+
     <div className={styles.fieldRow}>
       <div className={styles.fieldGroup}>
         <label className={styles.label}>Graduation Year</label>
@@ -62,6 +66,20 @@ export const QualificationsSection = ({
           ))}
         </select>
       </div>
+    </div>
+
+    <div className={styles.fieldGroup}>
+      <label className={styles.label}>GPA</label>
+      <input
+        className={styles.input}
+        type="number"
+        min={0}
+        max={4}
+        step={0.01}
+        placeholder="e.g. 3.5"
+        value={gpa}
+        onChange={(e) => onGpa(e.target.value)}
+      />
     </div>
   </SectionShell>
 );

@@ -7,11 +7,7 @@ interface Props {
 }
 
 export const SkillsSection = ({ skills, onChange }: Props) => (
-  <SectionShell
-    id="skills"
-    title="Skills"
-    desc="Showcase your skills accurately. Highlight your strengths."
-  >
+  <SectionShell id="skills" title="Skills" desc="List what you know and what you're good at.">
     <div className={styles.fieldGroup}>
       <label className={styles.label}>Skills</label>
       <p className={styles.fieldHint}>Enter your skills, separated by commas</p>

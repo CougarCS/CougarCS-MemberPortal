@@ -1,47 +1,31 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
+import iconUpload from '../../assets/icon-upload.svg';
 
 interface Props {
   linkedinHandle: string;
   resumeFile: File | null;
+  githubHandle: string;
+  portfolioUrl: string;
   onLinkedin: (v: string) => void;
   onResume: (f: File | null) => void;
+  onGithub: (v: string) => void;
+  onPortfolio: (v: string) => void;
 }
 
-export const ResumeSection = ({ linkedinHandle, resumeFile, onLinkedin, onResume }: Props) => (
-  <SectionShell id="resume" title="Resume" desc="Choose a source to power your profile">
-    <div className={styles.fieldGroup}>
-      <label className={styles.label}>LinkedIn Profile</label>
-      <div className={styles.prefixInput}>
-        <span className={styles.prefix}>linkedin.com/in/</span>
-        <input
-          className={styles.inputAffix}
-          value={linkedinHandle}
-          onChange={(e) => onLinkedin(e.target.value)}
-          placeholder="your-handle"
-        />
-      </div>
-    </div>
-
-    <div className={styles.orDivider}>
-      <span>Or</span>
-    </div>
-
+export const ResumeSection = ({
+  linkedinHandle,
+  resumeFile,
+  githubHandle,
+  portfolioUrl,
+  onLinkedin,
+  onResume,
+  onGithub,
+  onPortfolio,
+}: Props) => (
+  <SectionShell id="resume" title="Resume / Links" desc="Upload your resume and add your links.">
     <div className={styles.uploadZone}>
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="17 8 12 3 7 8" />
-        <line x1="12" y1="3" x2="12" y2="15" />
-      </svg>
+      <img src={iconUpload} alt="" width={24} height={24} />
       {resumeFile ? (
         <p className={styles.uploadFileName}>{resumeFile.name}</p>
       ) : (
@@ -59,6 +43,47 @@ export const ResumeSection = ({ linkedinHandle, resumeFile, onLinkedin, onResume
           onChange={(e) => onResume(e.target.files?.[0] ?? null)}
         />
       </label>
+    </div>
+
+    <div className={styles.fieldGroup}>
+      <label className={styles.label}>LinkedIn Profile</label>
+      <div className={styles.prefixInput}>
+        <span className={styles.prefix}>linkedin.com/in/</span>
+        <input
+          className={styles.inputAffix}
+          value={linkedinHandle}
+          onChange={(e) => onLinkedin(e.target.value)}
+          placeholder="your-handle"
+        />
+      </div>
+    </div>
+
+    <div className={styles.fieldGroup}>
+      <label className={styles.label}>
+        GitHub <span className={styles.optionalTag}>Optional</span>
+      </label>
+      <div className={styles.prefixInput}>
+        <span className={styles.prefix}>github.com/</span>
+        <input
+          className={styles.inputAffix}
+          value={githubHandle}
+          onChange={(e) => onGithub(e.target.value)}
+          placeholder="your-username"
+        />
+      </div>
+    </div>
+
+    <div className={styles.fieldGroup}>
+      <label className={styles.label}>
+        Portfolio <span className={styles.optionalTag}>Optional</span>
+      </label>
+      <input
+        className={styles.input}
+        type="url"
+        value={portfolioUrl}
+        onChange={(e) => onPortfolio(e.target.value)}
+        placeholder="https://yourportfolio.com"
+      />
     </div>
   </SectionShell>
 );

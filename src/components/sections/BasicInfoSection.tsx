@@ -1,5 +1,6 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
+import iconUser from '../../assets/icon-user.svg';
 
 interface Props {
   firstName: string;
@@ -25,29 +26,17 @@ export const BasicInfoSection = ({
   <SectionShell
     id="basic-information"
     title="Basic Information"
-    desc="This will be displayed on your profile"
+    desc="The basics shown on your profile."
   >
     <div className={styles.photoRow}>
       <div className={styles.avatar}>
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-        </svg>
+        <img src={iconUser} alt="" width={32} height={32} />
       </div>
       <div>
         <p className={styles.photoHint}>
           Upload a professional photo
           <br />
-          (max file size 50 MB)
+          (max file size 5 MB)
         </p>
         <button type="button" className={styles.outlineBtn}>
           Upload Photo

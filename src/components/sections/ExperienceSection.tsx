@@ -1,35 +1,15 @@
 import { useState } from 'react';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
+import type { Experience } from './types';
+import { MONTHS } from './constants';
 
-export interface Experience {
-  id: string;
-  title: string;
-  company: string;
-  startMonth: string;
-  startYear: string;
-  endMonth: string;
-  endYear: string;
-  current: boolean;
-  location: string;
-  description: string;
-  skills: string;
+interface Props {
+  experiences: Experience[];
+  onChange: (v: Experience[]) => void;
 }
-
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+import iconEdit from '../../assets/icon-edit.svg';
+import iconTrash from '../../assets/icon-trash.svg';
 
 const BLANK: Omit<Experience, 'id'> = {
   title: '',
@@ -43,11 +23,6 @@ const BLANK: Omit<Experience, 'id'> = {
   description: '',
   skills: '',
 };
-
-interface Props {
-  experiences: Experience[];
-  onChange: (v: Experience[]) => void;
-}
 
 export const ExperienceSection = ({ experiences, onChange }: Props) => {
   const [showForm, setShowForm] = useState(false);
@@ -83,7 +58,7 @@ export const ExperienceSection = ({ experiences, onChange }: Props) => {
     <SectionShell
       id="professional-experience"
       title="Professional Experience"
-      desc="Your work is valuable. Provide accurate details to showcase your employment experiences."
+      desc="Add your internships and jobs here, if any."
     >
       <div className={styles.listHeader}>
         <span className={styles.listHeaderLabel}>Experience</span>
@@ -238,19 +213,7 @@ export const ExperienceSection = ({ experiences, onChange }: Props) => {
                 onClick={() => openEdit(exp)}
                 aria-label="Edit"
               >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
+                <img src={iconEdit} alt="Edit" width={15} height={15} />
               </button>
               <button
                 type="button"
@@ -258,21 +221,7 @@ export const ExperienceSection = ({ experiences, onChange }: Props) => {
                 onClick={() => onChange(experiences.filter((e) => e.id !== exp.id))}
                 aria-label="Delete"
               >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.75"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  <path d="M10 11v6M14 11v6" />
-                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                </svg>
+                <img src={iconTrash} alt="Delete" width={15} height={15} />
               </button>
             </div>
           </div>

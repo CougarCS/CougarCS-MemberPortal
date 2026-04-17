@@ -1,18 +1,6 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-
-const ETHNICITIES = [
-  'Asian/Asian-American',
-  'South Asian/South Asian-American',
-  'Black/African-American',
-  'Indigenous/Native American',
-  'Latinx/Hispanic',
-  'Middle Eastern/North African',
-  'Native Hawaiian/Pacific Islander',
-  'White/Caucasian',
-  "I'm not certain of my ancestry",
-  "I don't wish to identify",
-];
+import { ETHNICITIES } from './constants';
 
 interface Props {
   gender: string;
@@ -31,7 +19,7 @@ export const IdentitiesSection = ({ gender, ethnicities, onGender, onEthnicities
     <SectionShell
       id="personal-identities"
       title="Personal Identities"
-      desc="You are more than what's on your resume and our companies are looking for people just like you."
+      desc="Optional info that helps companies find the right fit."
     >
       <div className={styles.fieldGroup}>
         <label className={styles.label}>What is your gender?</label>

@@ -4,6 +4,7 @@
   gap: 2rem;
   padding: 2.25rem 2rem;
   border-bottom: 1px solid var(--border);
+  scroll-margin-top: 10.5rem;
 }
 
 .section:last-child {
@@ -52,7 +53,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--grey-border);
   flex-shrink: 0;
 }
 
@@ -83,6 +83,15 @@
   letter-spacing: 0.01em;
 }
 
+.optionalTag {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--neutral-grey);
+  letter-spacing: 0.02em;
+  margin-left: 0.35rem;
+  text-transform: uppercase;
+}
+
 .fieldHint {
   font-size: 0.8rem;
   color: var(--neutral-grey);
@@ -103,6 +112,16 @@
   transition:
     border-color 0.18s,
     box-shadow 0.18s;
+}
+
+select.input {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
 }
 
 .input::placeholder {
@@ -244,19 +263,15 @@
   padding: 0.35rem;
   border: none;
   background: none;
-  color: var(--neutral-grey);
   cursor: pointer;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    color 0.15s,
-    background 0.15s;
+  transition: background 0.15s;
 }
 
 .iconBtn:hover {
-  color: var(--cougar-red);
   background: var(--cougar-red-light);
 }
 
@@ -299,16 +314,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.875rem 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.inlineRow:first-child {
-  padding-top: 0;
-}
-.inlineRow:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
 }
 
 .inlineLabel {
@@ -461,22 +466,6 @@
   color: var(--neutral-grey);
 }
 
-.orDivider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.8125rem;
-  color: var(--neutral-grey);
-}
-
-.orDivider::before,
-.orDivider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
 .uploadZone {
   display: flex;
   flex-direction: column;
@@ -486,7 +475,6 @@
   border: 2px dashed var(--border);
   border-radius: 8px;
   text-align: center;
-  color: var(--neutral-grey);
   transition: border-color 0.15s;
 }
 
