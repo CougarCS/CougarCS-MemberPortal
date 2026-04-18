@@ -26,21 +26,23 @@ export const SectionShell = ({ id, title, desc, children, saveState = 'idle', on
     </div>
     <div className={styles.sectionFields}>
       {children}
-      <div className={styles.sectionFooter}>
-        {saveState !== 'idle' && (
-          <span className={`${styles.saveStatus} ${styles[`saveStatus__${saveState}`]}`}>
-            {SAVE_STATUS_TEXT[saveState]}
-          </span>
-        )}
-        <button
-          type="button"
-          className={styles.primaryBtn}
-          onClick={onSave}
-          disabled={saveState === 'saving'}
-        >
-          {saveState === 'saving' ? 'Saving...' : 'Save'}
-        </button>
-      </div>
+      {onSave && (
+        <div className={styles.sectionFooter}>
+          {saveState !== 'idle' && (
+            <span className={`${styles.saveStatus} ${styles[`saveStatus__${saveState}`]}`}>
+              {SAVE_STATUS_TEXT[saveState]}
+            </span>
+          )}
+          <button
+            type="button"
+            className={styles.primaryBtn}
+            onClick={onSave}
+            disabled={saveState === 'saving'}
+          >
+            {saveState === 'saving' ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      )}
     </div>
   </section>
 );

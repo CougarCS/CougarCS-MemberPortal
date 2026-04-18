@@ -1,27 +1,23 @@
+import { useController, useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { ETHNICITIES } from './constants';
-import type { SaveState } from './types';
+import type { SaveState, ProfileFormValues } from './types';
 
 interface Props {
-  gender: string;
-  ethnicities: string[];
   saveState?: SaveState;
-  onGender: (v: string) => void;
-  onEthnicities: (v: string[]) => void;
   onSave?: () => void;
 }
 
-export const IdentitiesSection = ({
-  gender,
-  ethnicities,
-  saveState,
-  onGender,
-  onEthnicities,
-  onSave,
-}: Props) => {
+export const IdentitiesSection = ({ saveState, onSave }: Props) => {
+  const { control } = useFormContext<ProfileFormValues>();
+  const { field: genderField } = useController({ name: 'gender', control });
+  const { field: ethnicitiesField } = useController({ name: 'ethnicities', control });
+
+  const ethnicities: string[] = ethnicitiesField.value ?? [];
+
   const toggle = (v: string) =>
-    onEthnicities(
+    ethnicitiesField.onChange(
       ethnicities.includes(v) ? ethnicities.filter((e) => e !== v) : [...ethnicities, v],
     );
 
@@ -40,8 +36,8 @@ export const IdentitiesSection = ({
             <button
               key={g}
               type="button"
-              className={`${styles.pill} ${gender === g ? styles.pillActive : ''}`}
-              onClick={() => onGender(gender === g ? '' : g)}
+              className={`${styles.pill} ${genderField.value === g ? styles.pillActive : ''}`}
+              onClick={() => genderField.onChange(genderField.value === g ? '' : g)}
             >
               {g}
             </button>

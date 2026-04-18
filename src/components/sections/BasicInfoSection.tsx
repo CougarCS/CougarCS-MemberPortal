@@ -1,41 +1,28 @@
 import { useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-import type { SaveState } from './types';
+import type { SaveState, ProfileFormValues } from './types';
 import iconUser from '../../assets/icon-user.svg';
 
 interface Props {
-  firstName: string;
-  lastName: string;
-  email: string;
-  aboutMe: string;
   headshotUrl: string;
   uploadingHeadshot: boolean;
   saveState?: SaveState;
-  onFirstName: (v: string) => void;
-  onLastName: (v: string) => void;
-  onEmail: (v: string) => void;
-  onAboutMe: (v: string) => void;
   onHeadshotFile: (file: File) => void;
   onSave?: () => void;
 }
 
 export const BasicInfoSection = ({
-  firstName,
-  lastName,
-  email,
-  aboutMe,
   headshotUrl,
   uploadingHeadshot,
   saveState,
-  onFirstName,
-  onLastName,
-  onEmail,
-  onAboutMe,
   onHeadshotFile,
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { register, watch } = useFormContext<ProfileFormValues>();
+  const aboutMe = watch('aboutMe') ?? '';
 
   return (
     <SectionShell
@@ -81,7 +68,6 @@ export const BasicInfoSection = ({
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) onHeadshotFile(file);
-              // Reset input so same file can be re-selected
               e.target.value = '';
             }}
           />
@@ -91,41 +77,23 @@ export const BasicInfoSection = ({
       <div className={styles.fieldRow}>
         <div className={styles.fieldGroup}>
           <label className={styles.label}>First Name</label>
-          <input
-            className={styles.input}
-            value={firstName}
-            onChange={(e) => onFirstName(e.target.value)}
-          />
+          <input className={styles.input} {...register('firstName')} />
         </div>
         <div className={styles.fieldGroup}>
           <label className={styles.label}>Last Name</label>
-          <input
-            className={styles.input}
-            value={lastName}
-            onChange={(e) => onLastName(e.target.value)}
-          />
+          <input className={styles.input} {...register('lastName')} />
         </div>
       </div>
 
       <div className={styles.fieldGroup}>
         <label className={styles.label}>Email Address</label>
-        <input
-          className={styles.input}
-          type="email"
-          value={email}
-          onChange={(e) => onEmail(e.target.value)}
-        />
+        <input className={styles.input} type="email" {...register('email')} />
       </div>
 
       <div className={styles.fieldGroup}>
         <label className={styles.label}>About me</label>
         <p className={styles.fieldHint}>Nobody is quite like you. Tell us why!</p>
-        <textarea
-          className={styles.textarea}
-          rows={5}
-          value={aboutMe}
-          onChange={(e) => onAboutMe(e.target.value.slice(0, 1000))}
-        />
+        <textarea className={styles.textarea} rows={5} maxLength={1000} {...register('aboutMe')} />
         <span className={styles.charCount}>{aboutMe.length}/1000</span>
       </div>
     </SectionShell>

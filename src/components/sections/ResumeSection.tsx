@@ -1,39 +1,28 @@
 import { useRef } from 'react';
+import { useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-import type { SaveState } from './types';
+import type { SaveState, ProfileFormValues } from './types';
 import iconUpload from '../../assets/icon-upload.svg';
 
 interface Props {
-  linkedinHandle: string;
-  githubHandle: string;
-  portfolioUrl: string;
-  resumePath: string;
   uploadingResume: boolean;
   saveState?: SaveState;
-  onLinkedin: (v: string) => void;
-  onGithub: (v: string) => void;
-  onPortfolio: (v: string) => void;
   onResumeFile: (file: File) => void;
   onResumeDownload: () => void;
   onSave?: () => void;
 }
 
 export const ResumeSection = ({
-  linkedinHandle,
-  githubHandle,
-  portfolioUrl,
-  resumePath,
   uploadingResume,
   saveState,
-  onLinkedin,
-  onGithub,
-  onPortfolio,
   onResumeFile,
   onResumeDownload,
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { register, watch } = useFormContext<ProfileFormValues>();
+  const resumePath = watch('resumeUrl');
 
   return (
     <SectionShell
@@ -87,8 +76,7 @@ export const ResumeSection = ({
           <span className={styles.prefix}>linkedin.com/in/</span>
           <input
             className={styles.inputAffix}
-            value={linkedinHandle}
-            onChange={(e) => onLinkedin(e.target.value)}
+            {...register('linkedinHandle')}
             placeholder="your-handle"
           />
         </div>
@@ -102,8 +90,7 @@ export const ResumeSection = ({
           <span className={styles.prefix}>github.com/</span>
           <input
             className={styles.inputAffix}
-            value={githubHandle}
-            onChange={(e) => onGithub(e.target.value)}
+            {...register('githubHandle')}
             placeholder="your-username"
           />
         </div>
@@ -116,8 +103,7 @@ export const ResumeSection = ({
         <input
           className={styles.input}
           type="url"
-          value={portfolioUrl}
-          onChange={(e) => onPortfolio(e.target.value)}
+          {...register('portfolioUrl')}
           placeholder="https://yourportfolio.com"
         />
       </div>

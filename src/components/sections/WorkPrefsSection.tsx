@@ -1,36 +1,31 @@
+import { useController, useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { YesNo } from './YesNo';
 import { OPPORTUNITY_TYPES, WORK_ENVIRONMENTS } from './constants';
-import type { SaveState } from './types';
+import type { SaveState, ProfileFormValues } from './types';
 
 interface Props {
-  opportunities: string[];
-  openToRelocate: boolean;
-  workEnvironments: string[];
   saveState?: SaveState;
-  onOpportunities: (v: string[]) => void;
-  onOpenToRelocate: (v: boolean) => void;
-  onWorkEnvironments: (v: string[]) => void;
   onSave?: () => void;
 }
 
-export const WorkPrefsSection = ({
-  opportunities,
-  openToRelocate,
-  workEnvironments,
-  saveState,
-  onOpportunities,
-  onOpenToRelocate,
-  onWorkEnvironments,
-  onSave,
-}: Props) => {
+export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
+  const { control } = useFormContext<ProfileFormValues>();
+  const { field: oppField } = useController({ name: 'opportunities', control });
+  const { field: relocateField } = useController({ name: 'openToRelocate', control });
+  const { field: envField } = useController({ name: 'workEnvironments', control });
+
+  const opportunities: string[] = oppField.value ?? [];
+  const workEnvironments: string[] = envField.value ?? [];
+
   const toggleOpp = (v: string) =>
-    onOpportunities(
+    oppField.onChange(
       opportunities.includes(v) ? opportunities.filter((o) => o !== v) : [...opportunities, v],
     );
+
   const toggleEnv = (v: string) =>
-    onWorkEnvironments(
+    envField.onChange(
       workEnvironments.includes(v)
         ? workEnvironments.filter((e) => e !== v)
         : [...workEnvironments, v],
@@ -64,7 +59,7 @@ export const WorkPrefsSection = ({
 
       <div className={styles.inlineRow}>
         <span className={styles.inlineLabel}>Are you open to relocating for an opportunity?</span>
-        <YesNo value={openToRelocate} onChange={onOpenToRelocate} />
+        <YesNo value={relocateField.value} onChange={relocateField.onChange} />
       </div>
 
       <div className={styles.fieldGroup}>
