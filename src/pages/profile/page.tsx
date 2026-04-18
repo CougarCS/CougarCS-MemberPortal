@@ -29,6 +29,7 @@ import {
 export const ProfilePage = () => {
   const [activeSection, setActiveSection] = useState<SectionId>('basic-information');
   const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState(false);
   const [headshotUrl, setHeadshotUrl] = useState('');
   const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
@@ -64,7 +65,11 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     loadProfile().then((data) => {
-      if (!data) return;
+      if (!data) {
+        setProfileError(true);
+        setProfileLoading(false);
+        return;
+      }
       setHeadshotUrl(data.headshotUrl);
       reset(data);
       initializedRef.current = true;
@@ -171,6 +176,8 @@ export const ProfilePage = () => {
     });
 
   if (profileLoading) return null;
+  if (profileError)
+    return <p style={{ padding: '2rem' }}>Failed to load profile. Please refresh the page.</p>;
 
   return (
     <FormProvider {...form}>

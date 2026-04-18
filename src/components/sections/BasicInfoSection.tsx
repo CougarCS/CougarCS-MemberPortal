@@ -40,7 +40,7 @@ export const BasicInfoSection = ({
               alt="Profile headshot"
               width={68}
               height={68}
-              style={{ borderRadius: '50%', objectFit: 'cover', width: '100%', height: '100%' }}
+              className={styles.avatarImg}
             />
           ) : (
             <img src={iconUser} alt="" width={32} height={32} />
@@ -64,7 +64,7 @@ export const BasicInfoSection = ({
             ref={fileInputRef}
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            style={{ display: 'none' }}
+            className={styles.hiddenInput}
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) onHeadshotFile(file);
@@ -87,7 +87,7 @@ export const BasicInfoSection = ({
 
       <div className={styles.fieldGroup}>
         <label className={styles.label}>Email Address</label>
-        <input className={styles.input} type="email" {...register('email')} />
+        <input className={styles.input} type="email" {...register('email')} disabled />
       </div>
 
       <div className={styles.fieldGroup}>

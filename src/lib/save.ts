@@ -55,7 +55,7 @@ export async function saveResumeLinks(data: {
 export async function uploadHeadshot(file: File): Promise<string | null> {
   const form = new FormData();
   form.append('headshot', file);
-  const res = await apiPatchForm<{ headshotUrl: string }>('/api/profile/resume', form);
+  const res = await apiPatchForm<{ headshotUrl: string }>('/api/profile/headshot', form);
   return res?.headshotUrl ?? null;
 }
 

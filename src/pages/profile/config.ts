@@ -3,7 +3,6 @@ import type { ProfileFormValues } from '../../components/sections/types';
 export const FIELD_TO_SECTION: Record<string, string> = {
   firstName: 'basic-information',
   lastName: 'basic-information',
-  email: 'basic-information',
   aboutMe: 'basic-information',
   major: 'education',
   graduationYear: 'education',

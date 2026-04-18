@@ -61,7 +61,7 @@ export const ResumeSection = ({
           ref={fileInputRef}
           type="file"
           accept=".pdf,.doc,.docx"
-          style={{ display: 'none' }}
+          className={styles.hiddenInput}
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) onResumeFile(file);
