@@ -12,6 +12,16 @@ export const OPPORTUNITY_TYPE_DISPLAY_TO_DB: Record<string, string> = Object.fro
   Object.entries(OPPORTUNITY_TYPE_DB_TO_DISPLAY).map(([k, v]) => [v, k]),
 );
 
+export const WORK_ENV_DB_TO_DISPLAY: Record<string, string> = {
+  remote: 'Remote',
+  hybrid: 'Hybrid',
+  in_person: 'In-Person',
+};
+
+export const WORK_ENV_DISPLAY_TO_DB: Record<string, string> = Object.fromEntries(
+  Object.entries(WORK_ENV_DB_TO_DISPLAY).map(([k, v]) => [v, k]),
+);
+
 const monthIntToName = (m: number | null | undefined): string =>
   m != null ? (MONTHS[m - 1] ?? '') : '';
 
@@ -85,7 +95,7 @@ export async function loadProfile(): Promise<ProfileData | null> {
     authorizedToWork: raw.usWorkAuth ?? false,
     opportunities: (raw.opportunityTypes ?? []).map((v) => OPPORTUNITY_TYPE_DB_TO_DISPLAY[v] ?? v),
     openToRelocate: raw.willingToRelocate ?? false,
-    workEnvironments: raw.workEnvironments ?? [],
+    workEnvironments: (raw.workEnvironments ?? []).map((v) => WORK_ENV_DB_TO_DISPLAY[v] ?? v),
     gender: raw.gender ?? '',
     ethnicities: raw.ethnicities ?? [],
     experiences: (raw.experiences ?? []).map(

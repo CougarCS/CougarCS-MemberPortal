@@ -1,5 +1,5 @@
 import { apiDelete, apiPatch, apiPatchForm, apiPost } from './api';
-import { OPPORTUNITY_TYPE_DISPLAY_TO_DB } from './profile';
+import { OPPORTUNITY_TYPE_DISPLAY_TO_DB, WORK_ENV_DISPLAY_TO_DB } from './profile';
 import { MONTHS } from '../components/sections/constants';
 import type { Experience, Skill } from '../components/sections/types';
 
@@ -75,7 +75,7 @@ export async function saveWorkPrefs(data: {
     (await apiPatch('/api/profile/work-preferences', {
       opportunityTypes: data.opportunities.map((o) => OPPORTUNITY_TYPE_DISPLAY_TO_DB[o] ?? o),
       willingToRelocate: data.openToRelocate,
-      workEnvironments: data.workEnvironments,
+      workEnvironments: data.workEnvironments.map((e) => WORK_ENV_DISPLAY_TO_DB[e] ?? e),
     })) !== null
   );
 }
