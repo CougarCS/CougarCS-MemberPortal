@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-import type { Experience } from './types';
+import type { Experience, SaveState } from './types';
 import { MONTHS } from './constants';
 
 interface Props {
   experiences: Experience[];
+  saveState?: SaveState;
   onChange: (v: Experience[]) => void;
+  onSave?: () => void;
 }
 import iconEdit from '../../assets/icon-edit.svg';
 import iconTrash from '../../assets/icon-trash.svg';
@@ -24,7 +26,7 @@ const BLANK: Omit<Experience, 'id'> = {
   skills: '',
 };
 
-export const ExperienceSection = ({ experiences, onChange }: Props) => {
+export const ExperienceSection = ({ experiences, saveState, onChange, onSave }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Omit<Experience, 'id'>>(BLANK);
@@ -59,6 +61,8 @@ export const ExperienceSection = ({ experiences, onChange }: Props) => {
       id="professional-experience"
       title="Professional Experience"
       desc="Add your internships and jobs here, if any."
+      saveState={saveState}
+      onSave={onSave}
     >
       <div className={styles.listHeader}>
         <span className={styles.listHeaderLabel}>Experience</span>

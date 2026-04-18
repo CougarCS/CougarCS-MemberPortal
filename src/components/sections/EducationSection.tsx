@@ -1,16 +1,19 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { MONTHS } from './constants';
+import type { SaveState } from './types';
 
 interface Props {
   major: string;
   graduationYear: string;
   graduationMonth: string;
   gpa: string;
+  saveState?: SaveState;
   onMajor: (v: string) => void;
   onGraduationYear: (v: string) => void;
   onGraduationMonth: (v: string) => void;
   onGpa: (v: string) => void;
+  onSave?: () => void;
 }
 
 export const EducationSection = ({
@@ -18,15 +21,19 @@ export const EducationSection = ({
   graduationYear,
   graduationMonth,
   gpa,
+  saveState,
   onMajor,
   onGraduationYear,
   onGraduationMonth,
   onGpa,
+  onSave,
 }: Props) => (
   <SectionShell
     id="education"
     title="Education"
     desc="Your degree, major, and expected graduation."
+    saveState={saveState}
+    onSave={onSave}
   >
     <div className={styles.fieldGroup}>
       <label className={styles.label}>Major</label>

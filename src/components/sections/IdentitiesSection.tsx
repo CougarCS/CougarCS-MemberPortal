@@ -1,15 +1,25 @@
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { ETHNICITIES } from './constants';
+import type { SaveState } from './types';
 
 interface Props {
   gender: string;
   ethnicities: string[];
+  saveState?: SaveState;
   onGender: (v: string) => void;
   onEthnicities: (v: string[]) => void;
+  onSave?: () => void;
 }
 
-export const IdentitiesSection = ({ gender, ethnicities, onGender, onEthnicities }: Props) => {
+export const IdentitiesSection = ({
+  gender,
+  ethnicities,
+  saveState,
+  onGender,
+  onEthnicities,
+  onSave,
+}: Props) => {
   const toggle = (v: string) =>
     onEthnicities(
       ethnicities.includes(v) ? ethnicities.filter((e) => e !== v) : [...ethnicities, v],
@@ -20,6 +30,8 @@ export const IdentitiesSection = ({ gender, ethnicities, onGender, onEthnicities
       id="personal-identities"
       title="Personal Identities"
       desc="Optional info that helps companies find the right fit."
+      saveState={saveState}
+      onSave={onSave}
     >
       <div className={styles.fieldGroup}>
         <label className={styles.label}>What is your gender?</label>

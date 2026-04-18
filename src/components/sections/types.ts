@@ -11,3 +11,5 @@ export interface Experience {
   description: string;
   skills: string;
 }
+
+export type SaveState = 'idle' | 'unsaved' | 'saving' | 'saved';

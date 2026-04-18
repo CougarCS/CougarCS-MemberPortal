@@ -76,6 +76,18 @@
   min-width: 0;
 }
 
+.threeCol {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .threeCol {
+    grid-template-columns: 1fr;
+  }
+}
+
 .label {
   font-size: 0.8125rem;
   font-weight: 600;
@@ -498,6 +510,123 @@ select.input {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--cougar-red);
+}
+
+/* ── Section footer (save button + status) ───────────── */
+
+.sectionFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.875rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+
+.saveStatus {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.saveStatus__unsaved {
+  color: var(--neutral-grey);
+}
+
+.saveStatus__saving {
+  color: var(--neutral-grey);
+}
+
+.saveStatus__saved {
+  color: #16a34a;
+}
+
+/* ── Skills combobox ─────────────────────────────────── */
+
+.skillTagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.skillTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.6rem 0.3rem 0.75rem;
+  background: var(--cougar-red);
+  color: #ffffff;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+}
+
+.skillTagRemove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.skillTagRemove:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.skillsCombobox {
+  position: relative;
+}
+
+.skillsDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0;
+  padding: 0.375rem 0;
+  list-style: none;
+  background: #ffffff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.skillsDropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--text-h);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.skillsDropdownItem:hover {
+  background: var(--cougar-red-light);
+  color: var(--cougar-red);
+}
+
+.skillsDropdownEmpty {
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--neutral-grey);
 }
 
 @media (max-width: 820px) {

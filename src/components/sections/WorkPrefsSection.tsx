@@ -2,23 +2,28 @@ import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { YesNo } from './YesNo';
 import { OPPORTUNITY_TYPES, WORK_ENVIRONMENTS } from './constants';
+import type { SaveState } from './types';
 
 interface Props {
   opportunities: string[];
   openToRelocate: boolean;
   workEnvironments: string[];
+  saveState?: SaveState;
   onOpportunities: (v: string[]) => void;
   onOpenToRelocate: (v: boolean) => void;
   onWorkEnvironments: (v: string[]) => void;
+  onSave?: () => void;
 }
 
 export const WorkPrefsSection = ({
   opportunities,
   openToRelocate,
   workEnvironments,
+  saveState,
   onOpportunities,
   onOpenToRelocate,
   onWorkEnvironments,
+  onSave,
 }: Props) => {
   const toggleOpp = (v: string) =>
     onOpportunities(
@@ -36,6 +41,8 @@ export const WorkPrefsSection = ({
       id="work-preferences"
       title="Work Preferences"
       desc="The types of roles and environments you're looking for."
+      saveState={saveState}
+      onSave={onSave}
     >
       <div className={styles.fieldGroup}>
         <label className={styles.label}>
