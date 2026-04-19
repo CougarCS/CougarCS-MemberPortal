@@ -1,22 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Chakra+Petch:wght@400;500;600;700&display=swap');
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --cougar-red: #c80f2e;
+  --cougar-red-dark: #a00c24;
+  --cougar-red-light: rgba(200, 15, 46, 0.08);
+  --neutral-dark: #1e1f22;
+  --neutral-grey: #4a4b4f;
+  --light-grey: #f1f5f7;
+  --grey-border: #cccdce;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text: #4a4b4f;
+  --text-h: #1e1f22;
+  --bg: #ffffff;
+  --border: #cccdce;
+  --accent: var(--cougar-red);
+  --accent-bg: rgba(200, 15, 46, 0.08);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
+  --font-sans: 'Manrope', 'Inter', system-ui, sans-serif;
+  --font-heading: 'Chakra Petch', 'Manrope', system-ui, sans-serif;
+
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -27,4 +36,29 @@
 
 body {
   margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--cougar-red);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+input {
+  font-family: var(--font-sans);
 }
