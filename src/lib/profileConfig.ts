@@ -1,4 +1,4 @@
-import type { ProfileFormValues } from '../../components/sections/types';
+import type { ProfileFormValues } from '../components/profile/types';
 
 export const FIELD_TO_SECTION: Record<string, string> = {
   firstName: 'basic-information',

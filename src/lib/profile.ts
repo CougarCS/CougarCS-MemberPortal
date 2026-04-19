@@ -1,6 +1,6 @@
 import { apiGet } from './api';
-import { MONTHS } from '../components/sections/constants';
-import type { Skill, Experience, ProfileFormValues } from '../components/sections/types';
+import { MONTHS } from '../components/profile/constants';
+import type { Skill, Experience, ProfileFormValues } from '../components/profile/types';
 
 export const OPPORTUNITY_TYPE_DB_TO_DISPLAY: Record<string, string> = {
   full_time: 'Full-time/New Grad',

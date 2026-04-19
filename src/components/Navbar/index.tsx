@@ -5,7 +5,7 @@ import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
   { label: 'Profile', href: '/profile' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Home', href: '/home' },
 ];
 
 export const Navbar = () => {

@@ -3,6 +3,7 @@ import { LoginPage } from './pages/login/page';
 import { SignupPage } from './pages/signup/page';
 import { CheckEmailPage } from './pages/check-email/page';
 import { ProfilePage } from './pages/profile/page';
+import { HomePage } from './pages/home/page';
 import { Navbar } from './components/Navbar';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute';
@@ -46,6 +47,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
             </ProtectedRoute>
           }
         />

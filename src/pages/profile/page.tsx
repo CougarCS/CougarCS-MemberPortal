@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
-import { ProfileNav, NAV_SECTIONS } from './ProfileNav';
-import type { SectionId } from './ProfileNav';
-import { FIELD_TO_SECTION, DEFAULT_VALUES } from './config';
-import { BasicInfoSection } from '../../components/sections/BasicInfoSection';
-import { EducationSection } from '../../components/sections/EducationSection';
-import { ExperienceSection } from '../../components/sections/ExperienceSection';
-import { SkillsSection } from '../../components/sections/SkillsSection';
-import { ResumeSection } from '../../components/sections/ResumeSection';
-import { WorkPrefsSection } from '../../components/sections/WorkPrefsSection';
-import { LocationSection } from '../../components/sections/LocationSection';
-import { IdentitiesSection } from '../../components/sections/IdentitiesSection';
-import type { SaveState, ProfileFormValues } from '../../components/sections/types';
+import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav';
+import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
+import { BasicInfoSection } from '../../components/profile/BasicInfoSection';
+import { EducationSection } from '../../components/profile/EducationSection';
+import { ExperienceSection } from '../../components/profile/ExperienceSection';
+import { SkillsSection } from '../../components/profile/SkillsSection';
+import { ResumeSection } from '../../components/profile/ResumeSection';
+import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection';
+import { LocationSection } from '../../components/profile/LocationSection';
+import { IdentitiesSection } from '../../components/profile/IdentitiesSection';
+import type { SaveState, ProfileFormValues } from '../../components/profile/types';
 import { loadProfile } from '../../lib/profile';
 import {
   saveBasicInfo,

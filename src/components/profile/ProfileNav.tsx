@@ -1,4 +1,4 @@
-import styles from './page.module.css';
+import styles from './ProfileNav.module.css';
 
 export const NAV_SECTIONS = [
   { id: 'basic-information', label: 'Basic Information' },

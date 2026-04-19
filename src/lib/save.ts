@@ -1,7 +1,7 @@
 import { apiDelete, apiPatch, apiPatchForm, apiPost } from './api';
 import { OPPORTUNITY_TYPE_DISPLAY_TO_DB, WORK_ENV_DISPLAY_TO_DB } from './profile';
-import { MONTHS } from '../components/sections/constants';
-import type { Experience, Skill } from '../components/sections/types';
+import { MONTHS } from '../components/profile/constants';
+import type { Experience, Skill } from '../components/profile/types';
 
 const monthNameToInt = (name: string): number | null => {
   const idx = MONTHS.indexOf(name);
