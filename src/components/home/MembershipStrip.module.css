@@ -18,16 +18,16 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #16a34a;
+  background: var(--cougar-red);
   flex-shrink: 0;
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.18);
+  box-shadow: 0 0 0 2px rgba(163, 22, 22, 0.18);
 }
 
 .activeLabel {
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #16a34a;
+  color: var(--cougar-red);
 }
 
 .value {

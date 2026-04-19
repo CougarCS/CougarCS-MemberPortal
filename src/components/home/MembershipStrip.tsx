@@ -19,5 +19,9 @@ export const MembershipStrip = ({ pts, memberSince }: Props) => (
       <span className={styles.meta}>Member since</span>
       <span className={styles.value}>{memberSince}</span>
     </div>
+    <div className={`${styles.cell} ${styles.cellBorder}`}>
+      <span className={styles.meta}>Member until</span>
+      <span className={styles.value}>{'June 2026'}</span>
+    </div>
   </div>
 );
