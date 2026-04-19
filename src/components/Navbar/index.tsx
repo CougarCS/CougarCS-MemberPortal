@@ -24,7 +24,7 @@ export const Navbar = () => {
       <div className={styles.navbarMain}>
         <Link to="/profile" className={styles.logoLink}>
           <div className={styles.fullLogo}>
-            <img src="/cougarLogo.svg" alt="Logo" className={styles.logoIcon} />
+            <img src="/goldCougar.svg" alt="Logo" className={styles.logoIcon} />
             <img src="/cougarCSText.svg" alt="CougarCS" className={styles.logoText} />
           </div>
         </Link>
