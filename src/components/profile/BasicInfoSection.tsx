@@ -67,7 +67,9 @@ export const BasicInfoSection = ({
             className={styles.hiddenInput}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) onHeadshotFile(file);
+              if (file) {
+                onHeadshotFile(file);
+              }
               e.target.value = '';
             }}
           />

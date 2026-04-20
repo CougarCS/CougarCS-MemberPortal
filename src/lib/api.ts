@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 
 export const API_BASE = import.meta.env.VITE_API_URL;
 
-async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
+const apiFetch = async (path: string, init?: RequestInit): Promise<Response> => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -13,9 +13,9 @@ async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
   };
 
   return fetch(`${API_BASE}${path}`, { ...init, headers });
-}
+};
 
-export async function apiGet<T>(path: string): Promise<T | null> {
+export const apiGet = async <T>(path: string): Promise<T | null> => {
   try {
     const res = await apiFetch(path);
     if (!res.ok) {
@@ -27,9 +27,9 @@ export async function apiGet<T>(path: string): Promise<T | null> {
     console.error(`GET ${path}`, err);
     return null;
   }
-}
+};
 
-export async function apiPatch<T>(path: string, body: unknown): Promise<T | null> {
+export const apiPatch = async <T>(path: string, body: unknown): Promise<T | null> => {
   try {
     const res = await apiFetch(path, {
       method: 'PATCH',
@@ -45,9 +45,9 @@ export async function apiPatch<T>(path: string, body: unknown): Promise<T | null
     console.error(`PATCH ${path}`, err);
     return null;
   }
-}
+};
 
-export async function apiPatchForm<T>(path: string, form: FormData): Promise<T | null> {
+export const apiPatchForm = async <T>(path: string, form: FormData): Promise<T | null> => {
   try {
     const res = await apiFetch(path, { method: 'PATCH', body: form });
     if (!res.ok) {
@@ -59,9 +59,9 @@ export async function apiPatchForm<T>(path: string, form: FormData): Promise<T |
     console.error(`PATCH (form) ${path}`, err);
     return null;
   }
-}
+};
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T | null> {
+export const apiPost = async <T>(path: string, body: unknown): Promise<T | null> => {
   try {
     const res = await apiFetch(path, {
       method: 'POST',
@@ -77,9 +77,9 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T | null>
     console.error(`POST ${path}`, err);
     return null;
   }
-}
+};
 
-export async function apiDelete(path: string): Promise<boolean> {
+export const apiDelete = async (path: string): Promise<boolean> => {
   try {
     const res = await apiFetch(path, { method: 'DELETE' });
     if (!res.ok) {
@@ -91,4 +91,4 @@ export async function apiDelete(path: string): Promise<boolean> {
     console.error(`DELETE ${path}`, err);
     return false;
   }
-}
+};

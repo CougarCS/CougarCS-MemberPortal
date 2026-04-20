@@ -2,7 +2,7 @@ import { useController, useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
 import { YesNo } from './YesNo';
-import { OPPORTUNITY_TYPES, WORK_ENVIRONMENTS } from './constants';
+import { OPPORTUNITY_TYPES, WORK_ENVIRONMENTS } from '../../utils/constants';
 import type { SaveState, ProfileFormValues } from './types';
 
 interface Props {
@@ -19,17 +19,19 @@ export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
   const opportunities: string[] = oppField.value ?? [];
   const workEnvironments: string[] = envField.value ?? [];
 
-  const toggleOpp = (v: string) =>
+  const toggleOpp = (v: string) => {
     oppField.onChange(
       opportunities.includes(v) ? opportunities.filter((o) => o !== v) : [...opportunities, v],
     );
+  };
 
-  const toggleEnv = (v: string) =>
+  const toggleEnv = (v: string) => {
     envField.onChange(
       workEnvironments.includes(v)
         ? workEnvironments.filter((e) => e !== v)
         : [...workEnvironments, v],
     );
+  };
 
   return (
     <SectionShell

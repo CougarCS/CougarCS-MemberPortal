@@ -64,7 +64,9 @@ export const ExperienceSection = () => {
 
   const handleDelete = async (id: string) => {
     const ok = await deleteExperience(id);
-    if (ok) field.onChange(experiences.filter((e) => e.id !== id));
+    if (ok) {
+      field.onChange(experiences.filter((e) => e.id !== id));
+    }
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-import { MONTHS } from './constants';
+import { MONTHS } from '../../utils/constants';
 import type { SaveState, ProfileFormValues } from './types';
 
 interface Props {

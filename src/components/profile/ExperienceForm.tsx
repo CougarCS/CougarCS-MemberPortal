@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { SkillCombobox } from './SkillCombobox';
-import { MONTHS } from './constants';
+import { MONTHS } from '../../utils/constants';
 import styles from './section.module.css';
 import type { Experience, Skill } from './types';
 
