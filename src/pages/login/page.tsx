@@ -1,34 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
 import { AuthLayout, authStyles } from '../../components/AuthLayout';
 import type { AuthMode } from '../../components/AuthLayout';
 import { supabase } from '../../lib/supabase';
 import styles from './page.module.css';
 
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
 export const LoginPage = () => {
+  // mode is UI state (not a form field), so it stays as useState
   const [mode, setMode] = useState<AuthMode>('member');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>();
 
+  const onSubmit = async (data: LoginFormValues) => {
     if (mode === 'company') {
-      setError('Company login is not yet available.');
+      setError('root', { message: 'Company login is not yet available.' });
       return;
     }
 
-    setLoading(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError('Invalid email or password.');
-      setLoading(false);
+    if (signInError) {
+      setError('root', { message: 'Invalid email or password.' });
       return;
     }
 
@@ -55,7 +62,9 @@ export const LoginPage = () => {
           className={`${styles.toggle} ${
             mode === 'member' ? styles.toggleRight : styles.toggleLeft
           } ${mode === 'company' ? styles.toggleCompany : ''}`}
-          onClick={() => setMode(mode === 'company' ? 'member' : 'company')}
+          onClick={() => {
+            setMode(mode === 'company' ? 'member' : 'company');
+          }}
         >
           <span className={styles.toggleThumb} />
         </button>
@@ -66,7 +75,7 @@ export const LoginPage = () => {
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className={authStyles.form}>
+      <form onSubmit={handleSubmit(onSubmit)} className={authStyles.form}>
         <div className={authStyles.fieldGroup}>
           <label htmlFor="email" className={authStyles.label}>
             Email Address
@@ -74,8 +83,7 @@ export const LoginPage = () => {
           <input
             id="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email')}
             className={authStyles.input}
             placeholder="you@example.com"
             required
@@ -90,8 +98,7 @@ export const LoginPage = () => {
           <input
             id="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register('password')}
             className={authStyles.input}
             placeholder="••••••••"
             required
@@ -99,14 +106,14 @@ export const LoginPage = () => {
           />
         </div>
 
-        {error && <p className={authStyles.error}>{error}</p>}
+        {errors.root && <p className={authStyles.error}>{errors.root.message}</p>}
 
         <button
           type="submit"
           className={`${authStyles.submitBtn} ${mode === 'company' ? authStyles.submitBtnCompany : ''}`}
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? 'Signing in...' : 'Continue'}
+          {isSubmitting ? 'Signing in...' : 'Continue'}
         </button>
       </form>
 
