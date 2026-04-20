@@ -1,53 +1,56 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
 import { AuthLayout, authStyles } from '../../components/AuthLayout';
 import { supabase } from '../../lib/supabase';
 
+type SignupFormValues = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 export const SignupPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<SignupFormValues>();
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+  const onSubmit = async (data: SignupFormValues) => {
+    if (data.password !== data.confirmPassword) {
+      setError('root', { message: 'Passwords do not match.' });
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+    if (data.password.length < 8) {
+      setError('root', { message: 'Password must be at least 8 characters.' });
       return;
     }
-
-    setLoading(true);
 
     // Check for active membership before creating an account
     const { data: eligible, error: checkError } = await supabase.rpc(
       'check_membership_eligibility',
-      { p_email: email },
+      { p_email: data.email },
     );
 
+    const SIGNUP_ERROR =
+      'Sign-up failed. If you have an active membership and this problem persists, reach out in our Discord.';
+
     if (checkError || !eligible) {
-      setError('No active CougarCS membership found for this email.');
-      setLoading(false);
+      setError('root', { message: SIGNUP_ERROR });
       return;
     }
 
-    const { error: signUpError } = await supabase.auth.signUp({ email, password });
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+    });
 
     if (signUpError) {
-      if (signUpError.message.includes('already registered')) {
-        setError('An account already exists for this email.');
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
-      setLoading(false);
+      setError('root', { message: SIGNUP_ERROR });
       return;
     }
 
@@ -59,7 +62,7 @@ export const SignupPage = () => {
       <h1 className={authStyles.heading}>Create Account</h1>
       <p className={authStyles.subheading}>Prepare to propel your career</p>
 
-      <form onSubmit={handleSubmit} className={authStyles.form}>
+      <form onSubmit={handleSubmit(onSubmit)} className={authStyles.form}>
         <div className={authStyles.fieldGroup}>
           <label htmlFor="email" className={authStyles.label}>
             Email Address
@@ -67,8 +70,7 @@ export const SignupPage = () => {
           <input
             id="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            {...register('email')}
             className={authStyles.input}
             placeholder="you@example.com"
             required
@@ -83,8 +85,7 @@ export const SignupPage = () => {
           <input
             id="password"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            {...register('password')}
             className={authStyles.input}
             placeholder="••••••••"
             required
@@ -99,8 +100,7 @@ export const SignupPage = () => {
           <input
             id="confirmPassword"
             type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            {...register('confirmPassword')}
             className={authStyles.input}
             placeholder="••••••••"
             required
@@ -108,10 +108,10 @@ export const SignupPage = () => {
           />
         </div>
 
-        {error && <p className={authStyles.error}>{error}</p>}
+        {errors.root && <p className={authStyles.error}>{errors.root.message}</p>}
 
-        <button type="submit" className={authStyles.submitBtn} disabled={loading}>
-          {loading ? 'Creating account...' : 'Create Account'}
+        <button type="submit" className={authStyles.submitBtn} disabled={isSubmitting}>
+          {isSubmitting ? 'Creating account...' : 'Create Account'}
         </button>
       </form>
 

@@ -64,7 +64,9 @@ export const ResumeSection = ({
           className={styles.hiddenInput}
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) onResumeFile(file);
+            if (file) {
+              onResumeFile(file);
+            }
             e.target.value = '';
           }}
         />
