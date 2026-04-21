@@ -46,7 +46,7 @@ export const ResumeSection = ({
         ) : (
           <>
             <p className={styles.uploadPrompt}>Upload your resume</p>
-            <p className={styles.uploadHint}>PDF, DOC, DOCX — up to 10 MB</p>
+            <p className={styles.uploadHint}>PDF only; up to 1 MB</p>
           </>
         )}
         <button
@@ -64,7 +64,9 @@ export const ResumeSection = ({
           className={styles.hiddenInput}
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) onResumeFile(file);
+            if (file) {
+              onResumeFile(file);
+            }
             e.target.value = '';
           }}
         />

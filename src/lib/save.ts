@@ -1,18 +1,18 @@
 import { apiDelete, apiPatch, apiPatchForm, apiPost } from './api';
-import { OPPORTUNITY_TYPE_DISPLAY_TO_DB, WORK_ENV_DISPLAY_TO_DB } from './profile';
-import { MONTHS } from '../components/sections/constants';
-import type { Experience, Skill } from '../components/sections/types';
+import { OPPORTUNITY_TYPE_DISPLAY_TO_DB, WORK_ENV_DISPLAY_TO_DB } from '../utils/profileMappings';
+import { MONTHS } from '../utils/constants';
+import type { Experience, Skill } from '../components/profile/types';
 
 const monthNameToInt = (name: string): number | null => {
   const idx = MONTHS.indexOf(name);
   return idx >= 0 ? idx + 1 : null;
 };
 
-export async function saveBasicInfo(data: {
+export const saveBasicInfo = async (data: {
   firstName: string;
   lastName: string;
   aboutMe: string;
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/basic-info', {
       firstName: data.firstName || null,
@@ -20,14 +20,14 @@ export async function saveBasicInfo(data: {
       aboutMe: data.aboutMe || null,
     })) !== null
   );
-}
+};
 
-export async function saveEducation(data: {
+export const saveEducation = async (data: {
   major: string;
   graduationYear: string;
   graduationMonth: string;
   gpa: string;
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/education', {
       major: data.major || null,
@@ -36,13 +36,13 @@ export async function saveEducation(data: {
       gpa: data.gpa ? parseFloat(data.gpa) : null,
     })) !== null
   );
-}
+};
 
-export async function saveResumeLinks(data: {
+export const saveResumeLinks = async (data: {
   linkedinUrl: string;
   githubUrl: string;
   portfolioUrl: string;
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/resume', {
       linkedInUrl: data.linkedinUrl || null,
@@ -50,42 +50,46 @@ export async function saveResumeLinks(data: {
       portfolioUrl: data.portfolioUrl || null,
     })) !== null
   );
-}
+};
 
-export async function uploadHeadshot(file: File): Promise<string | null> {
+export const uploadHeadshot = async (file: File): Promise<string | null> => {
   const form = new FormData();
   form.append('headshot', file);
   const res = await apiPatchForm<{ headshotUrl: string }>('/api/profile/headshot', form);
   return res?.headshotUrl ?? null;
-}
+};
 
-export async function uploadResumeFile(file: File): Promise<string | null> {
+export const uploadResumeFile = async (file: File): Promise<string | null> => {
   const form = new FormData();
   form.append('resume', file);
   const res = await apiPatchForm<{ resumeUrl: string }>('/api/profile/resume', form);
   return res?.resumeUrl ?? null;
-}
+};
 
-export async function saveWorkPrefs(data: {
+export const saveWorkPrefs = async (data: {
   opportunities: string[];
   openToRelocate: boolean;
   workEnvironments: string[];
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/work-preferences', {
-      opportunityTypes: data.opportunities.map((o) => OPPORTUNITY_TYPE_DISPLAY_TO_DB[o] ?? o),
+      opportunityTypes: data.opportunities.map((o) => {
+        return OPPORTUNITY_TYPE_DISPLAY_TO_DB[o] ?? o;
+      }),
       willingToRelocate: data.openToRelocate,
-      workEnvironments: data.workEnvironments.map((e) => WORK_ENV_DISPLAY_TO_DB[e] ?? e),
+      workEnvironments: data.workEnvironments.map((e) => {
+        return WORK_ENV_DISPLAY_TO_DB[e] ?? e;
+      }),
     })) !== null
   );
-}
+};
 
-export async function saveLocation(data: {
+export const saveLocation = async (data: {
   city: string;
   state: string;
   zip: string;
   authorizedToWork: boolean;
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/location', {
       city: data.city || null,
@@ -94,25 +98,31 @@ export async function saveLocation(data: {
       usWorkAuth: data.authorizedToWork,
     })) !== null
   );
-}
+};
 
-export async function saveIdentities(data: {
+export const saveIdentities = async (data: {
   gender: string;
   ethnicities: string[];
-}): Promise<boolean> {
+}): Promise<boolean> => {
   return (
     (await apiPatch('/api/profile/identities', {
       gender: data.gender || null,
       ethnicities: data.ethnicities,
     })) !== null
   );
-}
+};
 
-export async function saveSkills(skills: Skill[]): Promise<boolean> {
-  return (await apiPatch('/api/profile/skills', { skillIds: skills.map((s) => s.id) })) !== null;
-}
+export const saveSkills = async (skills: Skill[]): Promise<boolean> => {
+  return (
+    (await apiPatch('/api/profile/skills', {
+      skillIds: skills.map((s) => {
+        return s.id;
+      }),
+    })) !== null
+  );
+};
 
-function experienceToApi(data: Omit<Experience, 'id'>) {
+const experienceToApi = (data: Omit<Experience, 'id'>) => {
   return {
     title: data.title || null,
     company: data.company || null,
@@ -123,18 +133,25 @@ function experienceToApi(data: Omit<Experience, 'id'>) {
     current: data.current,
     location: data.location || null,
     description: data.description || null,
-    skillIds: data.skills.map((s) => s.id),
+    skillIds: data.skills.map((s) => {
+      return s.id;
+    }),
   };
-}
+};
 
-export async function createExperience(data: Omit<Experience, 'id'>): Promise<Experience | null> {
+export const createExperience = async (
+  data: Omit<Experience, 'id'>,
+): Promise<Experience | null> => {
   return apiPost<Experience>('/api/profile/experience', experienceToApi(data));
-}
+};
 
-export async function updateExperience(id: string, data: Omit<Experience, 'id'>): Promise<boolean> {
+export const updateExperience = async (
+  id: string,
+  data: Omit<Experience, 'id'>,
+): Promise<boolean> => {
   return (await apiPatch(`/api/profile/experience/${id}`, experienceToApi(data))) !== null;
-}
+};
 
-export async function deleteExperience(id: string): Promise<boolean> {
+export const deleteExperience = async (id: string): Promise<boolean> => {
   return apiDelete(`/api/profile/experience/${id}`);
-}
+};

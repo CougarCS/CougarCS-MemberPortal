@@ -1,29 +1,11 @@
 import { apiGet } from './api';
-import { MONTHS } from '../components/sections/constants';
-import type { Skill, Experience, ProfileFormValues } from '../components/sections/types';
+import { MONTHS } from '../utils/constants';
+import { OPPORTUNITY_TYPE_DB_TO_DISPLAY, WORK_ENV_DB_TO_DISPLAY } from '../utils/profileMappings';
+import type { Skill, Experience, ProfileFormValues } from '../components/profile/types';
 
-export const OPPORTUNITY_TYPE_DB_TO_DISPLAY: Record<string, string> = {
-  full_time: 'Full-time/New Grad',
-  summer_internship: 'Summer Internship',
-  semester_internship: 'Fall/Spring Internship/Co-op',
+const monthIntToName = (m: number | null | undefined): string => {
+  return m != null ? (MONTHS[m - 1] ?? '') : '';
 };
-
-export const OPPORTUNITY_TYPE_DISPLAY_TO_DB: Record<string, string> = Object.fromEntries(
-  Object.entries(OPPORTUNITY_TYPE_DB_TO_DISPLAY).map(([k, v]) => [v, k]),
-);
-
-export const WORK_ENV_DB_TO_DISPLAY: Record<string, string> = {
-  remote: 'Remote',
-  hybrid: 'Hybrid',
-  in_person: 'In-Person',
-};
-
-export const WORK_ENV_DISPLAY_TO_DB: Record<string, string> = Object.fromEntries(
-  Object.entries(WORK_ENV_DB_TO_DISPLAY).map(([k, v]) => [v, k]),
-);
-
-const monthIntToName = (m: number | null | undefined): string =>
-  m != null ? (MONTHS[m - 1] ?? '') : '';
 
 interface ApiExperience {
   id: string;
@@ -70,9 +52,11 @@ export interface ProfileData extends ProfileFormValues {
   headshotUrl: string;
 }
 
-export async function loadProfile(): Promise<ProfileData | null> {
+export const loadProfile = async (): Promise<ProfileData | null> => {
   const raw = await apiGet<ApiProfile>('/api/profile');
-  if (!raw) return null;
+  if (!raw) {
+    return null;
+  }
 
   return {
     firstName: raw.firstName ?? '',
@@ -93,9 +77,13 @@ export async function loadProfile(): Promise<ProfileData | null> {
     state: raw.state ?? '',
     zip: raw.zip ?? '',
     authorizedToWork: raw.usWorkAuth ?? false,
-    opportunities: (raw.opportunityTypes ?? []).map((v) => OPPORTUNITY_TYPE_DB_TO_DISPLAY[v] ?? v),
+    opportunities: (raw.opportunityTypes ?? []).map((v) => {
+      return OPPORTUNITY_TYPE_DB_TO_DISPLAY[v] ?? v;
+    }),
     openToRelocate: raw.willingToRelocate ?? false,
-    workEnvironments: (raw.workEnvironments ?? []).map((v) => WORK_ENV_DB_TO_DISPLAY[v] ?? v),
+    workEnvironments: (raw.workEnvironments ?? []).map((v) => {
+      return WORK_ENV_DB_TO_DISPLAY[v] ?? v;
+    }),
     gender: raw.gender ?? '',
     ethnicities: raw.ethnicities ?? [],
     experiences: (raw.experiences ?? []).map(
@@ -114,9 +102,9 @@ export async function loadProfile(): Promise<ProfileData | null> {
       }),
     ),
   };
-}
+};
 
-export async function loadAllSkills(): Promise<Skill[]> {
+export const loadAllSkills = async (): Promise<Skill[]> => {
   const data = await apiGet<Skill[]>('/api/skills');
   return data ?? [];
-}
+};

@@ -5,8 +5,12 @@ import { useAuth } from '../../context/AuthContext';
 export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { session, loading } = useAuth();
 
-  if (loading) return null;
-  if (!session) return <Navigate to="/login" replace />;
+  if (loading) {
+    return null;
+  }
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
 
   return <>{children}</>;
 };

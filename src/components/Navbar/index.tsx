@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
+import menuIcon from '../../assets/icon-menu.svg';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
+  { label: 'Home', href: '/home' },
   { label: 'Profile', href: '/profile' },
-  { label: 'Dashboard', href: '/dashboard' },
 ];
 
 export const Navbar = () => {
@@ -24,7 +25,7 @@ export const Navbar = () => {
       <div className={styles.navbarMain}>
         <Link to="/profile" className={styles.logoLink}>
           <div className={styles.fullLogo}>
-            <img src="/cougarLogo.svg" alt="Logo" className={styles.logoIcon} />
+            <img src="/goldCougar.svg" alt="Logo" className={styles.logoIcon} />
             <img src="/cougarCSText.svg" alt="CougarCS" className={styles.logoText} />
           </div>
         </Link>
@@ -51,9 +52,7 @@ export const Navbar = () => {
           onClick={() => setMenuOpen((o) => !o)}
           aria-label="Toggle menu"
         >
-          <span className={styles.hamburger} />
-          <span className={styles.hamburger} />
-          <span className={styles.hamburger} />
+          <img src={menuIcon} width="22" height="16" alt="" />
         </button>
       </div>
 

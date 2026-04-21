@@ -1,7 +1,7 @@
 import { useController, useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
 import { SectionShell } from './SectionShell';
-import { ETHNICITIES } from './constants';
+import { ETHNICITIES } from '../../utils/constants';
 import type { SaveState, ProfileFormValues } from './types';
 
 interface Props {
@@ -16,16 +16,17 @@ export const IdentitiesSection = ({ saveState, onSave }: Props) => {
 
   const ethnicities: string[] = ethnicitiesField.value ?? [];
 
-  const toggle = (v: string) =>
+  const toggle = (v: string) => {
     ethnicitiesField.onChange(
       ethnicities.includes(v) ? ethnicities.filter((e) => e !== v) : [...ethnicities, v],
     );
+  };
 
   return (
     <SectionShell
       id="personal-identities"
       title="Personal Identities"
-      desc="Optional info that helps companies find the right fit."
+      desc="Optional info that we use to internally collect demographic data. Your individual data is NOT shared with companies or any 3rd party organizations."
       saveState={saveState}
       onSave={onSave}
     >

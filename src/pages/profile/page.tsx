@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
-import { ProfileNav, NAV_SECTIONS } from './ProfileNav';
-import type { SectionId } from './ProfileNav';
-import { FIELD_TO_SECTION, DEFAULT_VALUES } from './config';
-import { BasicInfoSection } from '../../components/sections/BasicInfoSection';
-import { EducationSection } from '../../components/sections/EducationSection';
-import { ExperienceSection } from '../../components/sections/ExperienceSection';
-import { SkillsSection } from '../../components/sections/SkillsSection';
-import { ResumeSection } from '../../components/sections/ResumeSection';
-import { WorkPrefsSection } from '../../components/sections/WorkPrefsSection';
-import { LocationSection } from '../../components/sections/LocationSection';
-import { IdentitiesSection } from '../../components/sections/IdentitiesSection';
-import type { SaveState, ProfileFormValues } from '../../components/sections/types';
+import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav';
+import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
+import { BasicInfoSection } from '../../components/profile/BasicInfoSection';
+import { EducationSection } from '../../components/profile/EducationSection';
+import { ExperienceSection } from '../../components/profile/ExperienceSection';
+import { SkillsSection } from '../../components/profile/SkillsSection';
+import { ResumeSection } from '../../components/profile/ResumeSection';
+import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection';
+import { LocationSection } from '../../components/profile/LocationSection';
+import { IdentitiesSection } from '../../components/profile/IdentitiesSection';
+import type { SaveState, ProfileFormValues } from '../../components/profile/types';
 import { loadProfile } from '../../lib/profile';
 import {
   saveBasicInfo,
@@ -44,17 +44,22 @@ export const ProfilePage = () => {
     'personal-identities': 'idle',
   });
 
-  const setSaveState = useCallback(
-    (section: string, state: SaveState) => setSaveStates((prev) => ({ ...prev, [section]: state })),
-    [],
-  );
+  const setSaveState = useCallback((section: string, state: SaveState) => {
+    setSaveStates((prev) => {
+      return { ...prev, [section]: state };
+    });
+  }, []);
 
   const doSave = useCallback(
     async (section: string, fn: () => Promise<boolean>) => {
       setSaveState(section, 'saving');
       const ok = await fn();
       setSaveState(section, ok ? 'saved' : 'unsaved');
-      if (ok) setTimeout(() => setSaveState(section, 'idle'), 3000);
+      if (ok) {
+        setTimeout(() => {
+          setSaveState(section, 'idle');
+        }, 3000);
+      }
     },
     [setSaveState],
   );
@@ -64,9 +69,10 @@ export const ProfilePage = () => {
   const initializedRef = useRef(false);
 
   useEffect(() => {
-    loadProfile().then((data) => {
+    const fetchProfile = async () => {
+      const data = await loadProfile();
       if (!data) {
-        setProfileError(true);
+        setProfileError(false);
         setProfileLoading(false);
         return;
       }
@@ -74,19 +80,29 @@ export const ProfilePage = () => {
       reset(data);
       initializedRef.current = true;
       setProfileLoading(false);
-    });
+    };
+    fetchProfile();
   }, [reset]);
 
   useEffect(() => {
     const sub = watch((_, { name }) => {
-      if (!initializedRef.current) return;
+      if (!initializedRef.current) {
+        return;
+      }
       const section = name && FIELD_TO_SECTION[name.split('.')[0]];
-      if (section) setSaveState(section, 'unsaved');
+      if (section) {
+        setSaveState(section, 'unsaved');
+      }
     });
-    return () => sub.unsubscribe();
+    return () => {
+      sub.unsubscribe();
+    };
   }, [watch, setSaveState]);
 
   useEffect(() => {
+    // this was causing the sidebar bug dont remove
+    if (profileLoading) return;
+
     const updateActive = () => {
       const scrollY = window.scrollY;
       const windowH = window.innerHeight;
@@ -101,52 +117,65 @@ export const ProfilePage = () => {
       let current: SectionId = NAV_SECTIONS[0].id;
       for (const { id } of NAV_SECTIONS) {
         const el = document.getElementById(id);
-        if (el && el.offsetTop <= threshold) current = id;
+        if (el && el.offsetTop <= threshold) {
+          current = id;
+        }
       }
       setActiveSection(current);
     };
 
     updateActive();
     window.addEventListener('scroll', updateActive, { passive: true });
-    return () => window.removeEventListener('scroll', updateActive);
+    return () => {
+      window.removeEventListener('scroll', updateActive);
+    };
   }, []);
 
-  const scrollToSection = (id: SectionId) =>
+  const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const handleHeadshotFile = async (file: File) => {
     setUploadingHeadshot(true);
     const url = await uploadHeadshot(file);
-    if (url) setHeadshotUrl(url);
+    if (url) {
+      setHeadshotUrl(url);
+    }
     setUploadingHeadshot(false);
   };
 
   const handleResumeFile = async (file: File) => {
     setUploadingResume(true);
     const url = await uploadResumeFile(file);
-    if (url) setValue('resumeUrl', url);
+    if (url) {
+      setValue('resumeUrl', url);
+    }
     setUploadingResume(false);
   };
 
   const handleResumeDownload = () => {
     const url = getValues('resumeUrl');
-    if (url) window.open(url, '_blank');
+    if (url) {
+      window.open(url, '_blank');
+    }
   };
 
-  const handleSaveBasicInfo = () =>
-    doSave('basic-information', () => {
+  const handleSaveBasicInfo = () => {
+    return doSave('basic-information', () => {
       const { firstName, lastName, aboutMe } = getValues();
       return saveBasicInfo({ firstName, lastName, aboutMe });
     });
+  };
 
-  const handleSaveEducation = () =>
-    doSave('education', () => {
+  const handleSaveEducation = () => {
+    return doSave('education', () => {
       const { major, graduationYear, graduationMonth, gpa } = getValues();
       return saveEducation({ major, graduationYear, graduationMonth, gpa });
     });
+  };
 
-  const handleSaveResumeLinks = () =>
-    doSave('resume', () => {
+  const handleSaveResumeLinks = () => {
+    return doSave('resume', () => {
       const { linkedinHandle, githubHandle, portfolioUrl } = getValues();
       return saveResumeLinks({
         linkedinUrl: linkedinHandle,
@@ -154,30 +183,41 @@ export const ProfilePage = () => {
         portfolioUrl,
       });
     });
+  };
 
-  const handleSaveSkills = () => doSave('skills', () => saveSkills(getValues('skills')));
+  const handleSaveSkills = () => {
+    return doSave('skills', () => {
+      return saveSkills(getValues('skills'));
+    });
+  };
 
-  const handleSaveWorkPrefs = () =>
-    doSave('work-preferences', () => {
+  const handleSaveWorkPrefs = () => {
+    return doSave('work-preferences', () => {
       const { opportunities, openToRelocate, workEnvironments } = getValues();
       return saveWorkPrefs({ opportunities, openToRelocate, workEnvironments });
     });
+  };
 
-  const handleSaveLocation = () =>
-    doSave('location', () => {
+  const handleSaveLocation = () => {
+    return doSave('location', () => {
       const { city, state, zip, authorizedToWork } = getValues();
       return saveLocation({ city, state, zip, authorizedToWork });
     });
+  };
 
-  const handleSaveIdentities = () =>
-    doSave('personal-identities', () => {
+  const handleSaveIdentities = () => {
+    return doSave('personal-identities', () => {
       const { gender, ethnicities } = getValues();
       return saveIdentities({ gender, ethnicities });
     });
+  };
 
-  if (profileLoading) return null;
-  if (profileError)
+  if (profileLoading) {
+    return null;
+  }
+  if (profileError) {
     return <p style={{ padding: '2rem' }}>Failed to load profile. Please refresh the page.</p>;
+  }
 
   return (
     <FormProvider {...form}>

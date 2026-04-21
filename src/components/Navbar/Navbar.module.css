@@ -97,8 +97,8 @@
 
 .menuToggle {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   cursor: pointer;
@@ -109,14 +109,6 @@
   .menuToggle {
     display: none;
   }
-}
-
-.hamburger {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: #fff;
-  border-radius: 2px;
 }
 
 .mobileMenu {

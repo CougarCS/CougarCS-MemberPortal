@@ -50,7 +50,7 @@ export const BasicInfoSection = ({
           <p className={styles.photoHint}>
             Upload a professional photo
             <br />
-            (max file size 5 MB)
+            (max file size 2 MB)
           </p>
           <button
             type="button"
@@ -67,7 +67,9 @@ export const BasicInfoSection = ({
             className={styles.hiddenInput}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) onHeadshotFile(file);
+              if (file) {
+                onHeadshotFile(file);
+              }
               e.target.value = '';
             }}
           />
@@ -92,7 +94,6 @@ export const BasicInfoSection = ({
 
       <div className={styles.fieldGroup}>
         <label className={styles.label}>About me</label>
-        <p className={styles.fieldHint}>Nobody is quite like you. Tell us why!</p>
         <textarea className={styles.textarea} rows={5} maxLength={1000} {...register('aboutMe')} />
         <span className={styles.charCount}>{aboutMe.length}/1000</span>
       </div>

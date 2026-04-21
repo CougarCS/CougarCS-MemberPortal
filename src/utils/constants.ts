@@ -30,6 +30,4 @@ export const ETHNICITIES = [
   'Middle Eastern/North African',
   'Native Hawaiian/Pacific Islander',
   'White/Caucasian',
-  "I'm not certain of my ancestry",
-  "I don't wish to identify",
 ];

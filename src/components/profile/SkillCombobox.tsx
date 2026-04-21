@@ -37,7 +37,9 @@ export const SkillCombobox = ({ selected, onChange }: Props) => {
     inputRef.current?.focus();
   };
 
-  const remove = (id: string) => onChange(selected.filter((s) => s.id !== id));
+  const remove = (id: string) => {
+    onChange(selected.filter((s) => s.id !== id));
+  };
 
   return (
     <>
