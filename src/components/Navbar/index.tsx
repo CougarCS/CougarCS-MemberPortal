@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
+import menuIcon from '../../assets/icon-menu.svg';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
@@ -51,9 +52,7 @@ export const Navbar = () => {
           onClick={() => setMenuOpen((o) => !o)}
           aria-label="Toggle menu"
         >
-          <span className={styles.hamburger} />
-          <span className={styles.hamburger} />
-          <span className={styles.hamburger} />
+          <img src={menuIcon} width="22" height="16" alt="" />
         </button>
       </div>
 
