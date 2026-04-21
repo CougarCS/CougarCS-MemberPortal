@@ -1,12 +1,12 @@
 import styles from './page.module.css';
-import { useGreeting } from '../../components/home/useGreeting';
-import { MemberStatusCard } from '../../components/home/MemberStatusCard';
-import { LeaderboardCard } from '../../components/home/LeaderboardCard';
-import type { LeaderboardEntry } from '../../components/home/LeaderboardCard';
-import { EventsRow } from '../../components/home/EventsRow';
-import type { Event } from '../../components/home/EventsRow';
-import { ResourcesList } from '../../components/home/ResourcesList';
-import type { Resource } from '../../components/home/ResourcesList';
+import { useGreeting } from '../../utils/useGreeting';
+import { MemberStatusCard } from '../../components/home/MemberStatusCard/MemberStatusCard';
+import { LeaderboardCard } from '../../components/home/LeaderboardCard/LeaderboardCard';
+import type { LeaderboardEntry } from '../../components/home/LeaderboardCard/LeaderboardCard';
+import { EventsRow } from '../../components/home/EventsRow/EventsRow';
+import type { Event } from '../../components/home/EventsRow/EventsRow';
+import { ResourcesList } from '../../components/home/ResourcesList/ResourcesList';
+import type { Resource } from '../../components/home/ResourcesList/ResourcesList';
 
 // temp fake data to populate this page
 const MEMBER = {

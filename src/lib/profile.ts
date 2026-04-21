@@ -1,7 +1,7 @@
 import { apiGet } from './api';
 import { MONTHS } from '../utils/constants';
 import { OPPORTUNITY_TYPE_DB_TO_DISPLAY, WORK_ENV_DB_TO_DISPLAY } from '../utils/profileMappings';
-import type { Skill, Experience, ProfileFormValues } from '../components/profile/types';
+import type { Skill, Experience, ProfileFormValues } from '../utils/types';
 
 const monthIntToName = (m: number | null | undefined): string => {
   return m != null ? (MONTHS[m - 1] ?? '') : '';

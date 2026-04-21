@@ -84,7 +84,6 @@
   flex-shrink: 0;
 }
 
-/* "···" gap row between top-3 and current user */
 .separator {
   display: flex;
   align-items: center;

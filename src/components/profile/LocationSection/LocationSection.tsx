@@ -1,8 +1,8 @@
 import { useController, useFormContext } from 'react-hook-form';
 import styles from './section.module.css';
-import { SectionShell } from './SectionShell';
-import { YesNo } from './YesNo';
-import type { SaveState, ProfileFormValues } from './types';
+import { SectionShell } from '../SectionShell/SectionShell';
+import { YesNo } from '../YesNo/YesNo';
+import type { SaveState, ProfileFormValues } from '../../../utils/types';
 
 interface Props {
   saveState?: SaveState;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { loadAllSkills } from './profile';
-import type { Skill } from '../components/profile/types';
+import type { Skill } from '../utils/types';
 
 let cache: Skill[] | null = null;
 

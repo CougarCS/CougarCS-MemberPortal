@@ -1,8 +1,8 @@
 import { useController, useFormContext } from 'react-hook-form';
-import { SkillCombobox } from './SkillCombobox';
+import { SkillCombobox } from './SkillsComboBox/SkillsComboBox';
 import styles from './section.module.css';
-import { SectionShell } from './SectionShell';
-import type { SaveState, ProfileFormValues, Skill } from './types';
+import { SectionShell } from '../SectionShell/SectionShell';
+import type { SaveState, ProfileFormValues, Skill } from '../../../utils/types';
 
 interface Props {
   saveState?: SaveState;

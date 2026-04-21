@@ -1,0 +1,58 @@
+.photoRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--light-grey);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.photoHint {
+  font-size: 0.8rem;
+  color: var(--neutral-grey);
+  margin: 0 0 0.625rem;
+  line-height: 1.5;
+}
+
+.outlineBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-h);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+  white-space: nowrap;
+}
+
+.outlineBtn:hover {
+  border-color: var(--cougar-red);
+  color: var(--cougar-red);
+}
+
+.hiddenInput {
+  display: none;
+}

@@ -1,4 +1,4 @@
-import { AuthLayout, authStyles } from '../../components/AuthLayout';
+import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
 import emailIcon from '../../assets/email.svg';
 import styles from './page.module.css';
 

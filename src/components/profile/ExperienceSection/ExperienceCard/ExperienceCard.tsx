@@ -1,5 +1,5 @@
 import styles from './section.module.css';
-import type { Experience } from './types';
+import type { Experience } from '../../../../utils/types';
 import iconEdit from '../../assets/icon-edit.svg';
 import iconTrash from '../../assets/icon-trash.svg';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { useSkills } from '../../lib/useSkills';
 import styles from './section.module.css';
-import type { Skill } from './types';
+import { useSkills } from '../../../../lib/useSkills';
+import type { Skill } from '../../../../utils/types';
 
 interface Props {
   selected: Skill[];

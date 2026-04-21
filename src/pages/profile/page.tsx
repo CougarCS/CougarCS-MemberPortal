@@ -1,18 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
-import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav';
-import type { SectionId } from '../../components/profile/ProfileNav';
+import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
-import { BasicInfoSection } from '../../components/profile/BasicInfoSection';
-import { EducationSection } from '../../components/profile/EducationSection';
-import { ExperienceSection } from '../../components/profile/ExperienceSection';
-import { SkillsSection } from '../../components/profile/SkillsSection';
-import { ResumeSection } from '../../components/profile/ResumeSection';
-import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection';
-import { LocationSection } from '../../components/profile/LocationSection';
-import { IdentitiesSection } from '../../components/profile/IdentitiesSection';
-import type { SaveState, ProfileFormValues } from '../../components/profile/types';
+import { BasicInfoSection } from '../../components/profile/BasicInfoSection/BasicInfoSection';
+import { EducationSection } from '../../components/profile/EducationSection/EducationSection';
+import { ExperienceSection } from '../../components/profile/ExperienceSection/ExperienceSection';
+import { ResumeSection } from '../../components/profile/ResumeSection/ResumeSection';
+import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection/WorkPrefsSection';
+import type { SaveState, ProfileFormValues } from '../../utils/types';
 import { loadProfile } from '../../lib/profile';
 import {
   saveBasicInfo,
@@ -25,6 +22,9 @@ import {
   saveIdentities,
   saveSkills,
 } from '../../lib/save';
+import { LocationSection } from '../../components/profile/LocationSection/LocationSection';
+import { IdentitiesSection } from '../../components/profile/IdentitiesSection/IdentitiesSection';
+import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
 
 export const ProfilePage = () => {
   const [activeSection, setActiveSection] = useState<SectionId>('basic-information');

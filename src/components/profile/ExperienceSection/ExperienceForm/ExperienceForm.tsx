@@ -1,8 +1,8 @@
 import { useForm, useController } from 'react-hook-form';
-import { SkillCombobox } from './SkillCombobox';
-import { MONTHS } from '../../utils/constants';
+import { MONTHS } from '../../../../utils/constants';
 import styles from './section.module.css';
-import type { Experience, Skill } from './types';
+import type { Experience, Skill } from '../../../../utils/types';
+import { SkillCombobox } from '../../SkillsSection/SkillsComboBox/SkillsComboBox';
 
 const BLANK: Omit<Experience, 'id'> = {
   title: '',

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
-import { createExperience, updateExperience, deleteExperience } from '../../lib/save';
+import { createExperience, updateExperience, deleteExperience } from '../../../lib/save';
 import styles from './section.module.css';
-import { SectionShell } from './SectionShell';
-import { ExperienceForm } from './ExperienceForm';
-import { ExperienceCard } from './ExperienceCard';
-import type { Experience, ProfileFormValues } from './types';
+import { SectionShell } from '../SectionShell/SectionShell';
+import { ExperienceForm } from './ExperienceForm/ExperienceForm';
+import { ExperienceCard } from './ExperienceCard/ExperienceCard';
+import type { Experience, ProfileFormValues } from '../../../utils/types';
 
 export const ExperienceSection = () => {
   const { control } = useFormContext<ProfileFormValues>();

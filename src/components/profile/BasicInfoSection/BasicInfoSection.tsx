@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
-import { SectionShell } from './SectionShell';
-import type { SaveState, ProfileFormValues } from './types';
+import styles from './BasicInfoSection.module.css';
+import { SectionShell } from '../SectionShell/SectionShell';
+import type { SaveState, ProfileFormValues } from '../../../utils/types';
 import iconUser from '../../assets/icon-user.svg';
 
 interface Props {

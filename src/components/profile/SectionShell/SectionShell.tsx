@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styles from './section.module.css';
-import type { SaveState } from './types';
+import type { SaveState } from '../../../utils/types';
 
 interface Props {
   id: string;
