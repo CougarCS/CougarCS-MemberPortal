@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import styles from './BasicInfoSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
@@ -10,8 +10,7 @@ import type { SaveState, ProfileFormValues } from '../../../utils/types';
 import iconUser from '../../../assets/icon-user.svg';
 
 interface Props {
-  headshotUrl: string;
-  uploadingHeadshot: boolean;
+  isSaving: boolean;
   saveState?: SaveState;
   onHeadshotFile: (file: File) => void;
   onSave?: () => void;
@@ -24,15 +23,28 @@ const AboutMeCharCount = () => {
   return <span className={styles.charCount}>{aboutMe.length}/1000</span>;
 };
 
-export const BasicInfoSection = ({
-  headshotUrl,
-  uploadingHeadshot,
-  saveState,
-  onHeadshotFile,
-  onSave,
-}: Props) => {
+export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { register } = useFormContext<ProfileFormValues>();
+  const { control, register } = useFormContext<ProfileFormValues>();
+  const headshotUrl = useWatch({ control, name: 'headshotUrl' }) ?? '';
+  const headshotFile = useWatch({ control, name: 'headshotFile' });
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  useEffect(() => {
+    if (!headshotFile) {
+      setPreviewUrl(headshotUrl);
+      return;
+    }
+
+    const url = URL.createObjectURL(headshotFile);
+    setPreviewUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [headshotFile, headshotUrl]);
+
+  const hasHeadshot = Boolean(headshotFile || headshotUrl);
 
   return (
     <SectionShell
@@ -44,9 +56,9 @@ export const BasicInfoSection = ({
     >
       <div className={styles.photoRow}>
         <div className={styles.avatar}>
-          {headshotUrl ? (
+          {previewUrl ? (
             <img
-              src={headshotUrl}
+              src={previewUrl}
               alt="Profile headshot"
               width={68}
               height={68}
@@ -64,10 +76,10 @@ export const BasicInfoSection = ({
           </p>
           <OutlineButton
             type="button"
-            disabled={uploadingHeadshot}
+            disabled={isSaving}
             onClick={() => fileInputRef.current?.click()}
           >
-            {uploadingHeadshot ? 'Uploading...' : headshotUrl ? 'Replace Photo' : 'Upload Photo'}
+            {isSaving ? 'Saving...' : hasHeadshot ? 'Replace Photo' : 'Upload Photo'}
           </OutlineButton>
           <input
             ref={fileInputRef}

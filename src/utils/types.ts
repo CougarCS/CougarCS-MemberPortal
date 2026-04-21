@@ -24,6 +24,8 @@ export interface ProfileFormValues {
   lastName: string;
   email: string;
   aboutMe: string;
+  headshotUrl: string;
+  headshotFile: File | null;
   major: string;
   graduationYear: string;
   graduationMonth: string;
@@ -34,6 +36,7 @@ export interface ProfileFormValues {
   githubHandle: string;
   portfolioUrl: string;
   resumeUrl: string; // URL returned by the API (used to show/download resume)
+  resumeFile: File | null;
   opportunities: string[]; // display strings e.g. "Full-time/New Grad"
   openToRelocate: boolean;
   workEnvironments: string[];

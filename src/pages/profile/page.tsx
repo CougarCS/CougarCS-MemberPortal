@@ -17,8 +17,6 @@ import {
   saveBasicInfo,
   saveEducation,
   saveResumeLinks,
-  uploadHeadshot,
-  uploadResumeFile,
   saveWorkPrefs,
   saveLocation,
   saveIdentities,
@@ -31,9 +29,6 @@ import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSect
 export const ProfilePage = () => {
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(false);
-  const [headshotUrl, setHeadshotUrl] = useState('');
-  const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
 
   const [saveStates, setSaveStates] = useState<Record<string, SaveState>>({
     'basic-information': 'idle',
@@ -73,6 +68,17 @@ export const ProfilePage = () => {
   const form = useForm<ProfileFormValues>({ defaultValues: DEFAULT_VALUES });
   const { subscribe, getValues, setValue, reset } = form;
   const initializedRef = useRef(false);
+  const suppressSaveTrackingRef = useRef(false);
+
+  const runWithoutSaveTracking = useCallback((fn: () => void) => {
+    suppressSaveTrackingRef.current = true;
+
+    try {
+      fn();
+    } finally {
+      suppressSaveTrackingRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -84,7 +90,6 @@ export const ProfilePage = () => {
         return;
       }
 
-      setHeadshotUrl(data.headshotUrl);
       reset(data);
       initializedRef.current = true;
       setProfileLoading(false);
@@ -97,7 +102,7 @@ export const ProfilePage = () => {
     const unsubscribe = subscribe({
       formState: { values: true },
       callback: ({ name }) => {
-        if (!initializedRef.current || !name) {
+        if (!initializedRef.current || !name || suppressSaveTrackingRef.current) {
           return;
         }
 
@@ -115,22 +120,12 @@ export const ProfilePage = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleHeadshotFile = async (file: File) => {
-    setUploadingHeadshot(true);
-    const url = await uploadHeadshot(file);
-    if (url) {
-      setHeadshotUrl(url);
-    }
-    setUploadingHeadshot(false);
+  const handleHeadshotFile = (file: File) => {
+    setValue('headshotFile', file);
   };
 
-  const handleResumeFile = async (file: File) => {
-    setUploadingResume(true);
-    const url = await uploadResumeFile(file);
-    if (url) {
-      setValue('resumeUrl', url);
-    }
-    setUploadingResume(false);
+  const handleResumeFile = (file: File) => {
+    setValue('resumeFile', file);
   };
 
   const handleResumeDownload = () => {
@@ -141,9 +136,23 @@ export const ProfilePage = () => {
   };
 
   const handleSaveBasicInfo = () => {
-    return doSave('basic-information', () => {
-      const { firstName, lastName, aboutMe } = getValues();
-      return saveBasicInfo({ firstName, lastName, aboutMe });
+    return doSave('basic-information', async () => {
+      const { firstName, lastName, aboutMe, headshotFile } = getValues();
+      const result = await saveBasicInfo({ firstName, lastName, aboutMe, headshotFile });
+
+      if (!result) {
+        return false;
+      }
+
+      runWithoutSaveTracking(() => {
+        if (result.headshotUrl) {
+          setValue('headshotUrl', result.headshotUrl);
+        }
+
+        setValue('headshotFile', null);
+      });
+
+      return true;
     });
   };
 
@@ -155,13 +164,28 @@ export const ProfilePage = () => {
   };
 
   const handleSaveResumeLinks = () => {
-    return doSave('resume', () => {
-      const { linkedinHandle, githubHandle, portfolioUrl } = getValues();
-      return saveResumeLinks({
+    return doSave('resume', async () => {
+      const { linkedinHandle, githubHandle, portfolioUrl, resumeFile } = getValues();
+      const result = await saveResumeLinks({
         linkedinUrl: linkedinHandle,
         githubUrl: githubHandle,
         portfolioUrl,
+        resumeFile,
       });
+
+      if (!result) {
+        return false;
+      }
+
+      runWithoutSaveTracking(() => {
+        if (result.resumeUrl) {
+          setValue('resumeUrl', result.resumeUrl);
+        }
+
+        setValue('resumeFile', null);
+      });
+
+      return true;
     });
   };
 
@@ -201,8 +225,7 @@ export const ProfilePage = () => {
       <ProfileNav onNavigate={scrollToSection} />
       <main className={styles.content}>
         <BasicInfoSection
-          headshotUrl={headshotUrl}
-          uploadingHeadshot={uploadingHeadshot}
+          isSaving={saveStates['basic-information'] === 'saving'}
           saveState={saveStates['basic-information']}
           onHeadshotFile={handleHeadshotFile}
           onSave={handleSaveBasicInfo}
@@ -211,7 +234,7 @@ export const ProfilePage = () => {
         <ExperienceSection />
         <SkillsSection saveState={saveStates['skills']} onSave={handleSaveSkills} />
         <ResumeSection
-          uploadingResume={uploadingResume}
+          isSaving={saveStates['resume'] === 'saving'}
           saveState={saveStates['resume']}
           onResumeFile={handleResumeFile}
           onResumeDownload={handleResumeDownload}

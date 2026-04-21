@@ -2,93 +2,123 @@ import { supabase } from './supabase';
 
 export const API_BASE = import.meta.env.VITE_API_URL;
 
-const apiFetch = async (path: string, init?: RequestInit): Promise<Response> => {
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+
+const buildUrl = (path: string) => {
+  return `${API_BASE}${path}`;
+};
+
+const getAuthHeaders = async () => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const headers: HeadersInit = {
-    ...(init?.headers ?? {}),
-    ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-  };
+  if (!session?.access_token) {
+    return {};
+  }
 
-  return fetch(`${API_BASE}${path}`, { ...init, headers });
+  return { Authorization: `Bearer ${session.access_token}` };
+};
+
+const parseErrorBody = async (response: Response) => {
+  const contentType = response.headers.get('content-type') ?? '';
+
+  try {
+    if (contentType.includes('application/json')) {
+      const data = (await response.json()) as { error?: string; message?: string };
+      return data.message ?? data.error ?? JSON.stringify(data);
+    }
+
+    const text = await response.text();
+    return text || response.statusText;
+  } catch {
+    return response.statusText;
+  }
+};
+
+const parseJsonBody = async <T>(response: Response): Promise<T | null> => {
+  if (response.status === 204) {
+    return null;
+  }
+
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!contentType.includes('application/json')) {
+    return null;
+  }
+
+  return (await response.json()) as T;
+};
+
+const request = async (method: HttpMethod, path: string, init?: RequestInit) => {
+  const authHeaders = await getAuthHeaders();
+  const headers = new Headers(init?.headers);
+
+  Object.entries(authHeaders).forEach(([key, value]) => {
+    headers.set(key, value);
+  });
+
+  try {
+    return await fetch(buildUrl(path), {
+      ...init,
+      method,
+      headers,
+    });
+  } catch (error) {
+    console.error(`[api] ${method} ${path} failed`, error);
+    return null;
+  }
+};
+
+const requestJson = async <T>(method: HttpMethod, path: string, init?: RequestInit) => {
+  const response = await request(method, path, init);
+
+  if (!response) {
+    return null;
+  }
+
+  if (!response.ok) {
+    const errorBody = await parseErrorBody(response);
+    console.error(`[api] ${method} ${path} failed (${response.status})`, errorBody);
+    return null;
+  }
+
+  return parseJsonBody<T>(response);
 };
 
 export const apiGet = async <T>(path: string): Promise<T | null> => {
-  try {
-    const res = await apiFetch(path);
-    if (!res.ok) {
-      console.error(`GET ${path} → ${res.status}`);
-      return null;
-    }
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error(`GET ${path}`, err);
-    return null;
-  }
+  return requestJson<T>('GET', path);
 };
 
 export const apiPatch = async <T>(path: string, body: unknown): Promise<T | null> => {
-  try {
-    const res = await apiFetch(path, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) {
-      console.error(`PATCH ${path} → ${res.status}`);
-      return null;
-    }
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error(`PATCH ${path}`, err);
-    return null;
-  }
+  return requestJson<T>('PATCH', path, {
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
 };
 
 export const apiPatchForm = async <T>(path: string, form: FormData): Promise<T | null> => {
-  try {
-    const res = await apiFetch(path, { method: 'PATCH', body: form });
-    if (!res.ok) {
-      console.error(`PATCH (form) ${path} → ${res.status}`);
-      return null;
-    }
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error(`PATCH (form) ${path}`, err);
-    return null;
-  }
+  return requestJson<T>('PATCH', path, { body: form });
 };
 
 export const apiPost = async <T>(path: string, body: unknown): Promise<T | null> => {
-  try {
-    const res = await apiFetch(path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) {
-      console.error(`POST ${path} → ${res.status}`);
-      return null;
-    }
-    return (await res.json()) as T;
-  } catch (err) {
-    console.error(`POST ${path}`, err);
-    return null;
-  }
+  return requestJson<T>('POST', path, {
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
 };
 
 export const apiDelete = async (path: string): Promise<boolean> => {
-  try {
-    const res = await apiFetch(path, { method: 'DELETE' });
-    if (!res.ok) {
-      console.error(`DELETE ${path} → ${res.status}`);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error(`DELETE ${path}`, err);
+  const response = await request('DELETE', path);
+
+  if (!response) {
     return false;
   }
+
+  if (!response.ok) {
+    const errorBody = await parseErrorBody(response);
+    console.error(`[api] DELETE ${path} failed (${response.status})`, errorBody);
+    return false;
+  }
+
+  return true;
 };

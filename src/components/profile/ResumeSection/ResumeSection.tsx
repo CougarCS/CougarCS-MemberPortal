@@ -9,7 +9,7 @@ import type { SaveState, ProfileFormValues } from '../../../utils/types';
 import iconUpload from '../../../assets/icon-upload.svg';
 
 interface Props {
-  uploadingResume: boolean;
+  isSaving: boolean;
   saveState?: SaveState;
   onResumeFile: (file: File) => void;
   onResumeDownload: () => void;
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const ResumeSection = ({
-  uploadingResume,
+  isSaving,
   saveState,
   onResumeFile,
   onResumeDownload,
@@ -26,6 +26,8 @@ export const ResumeSection = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { control, register } = useFormContext<ProfileFormValues>();
   const resumePath = useWatch({ control, name: 'resumeUrl' });
+  const resumeFile = useWatch({ control, name: 'resumeFile' });
+  const hasResume = Boolean(resumeFile || resumePath);
 
   return (
     <SectionShell
@@ -37,8 +39,13 @@ export const ResumeSection = ({
     >
       <div className={styles.uploadZone}>
         <img src={iconUpload} alt="" width={24} height={24} />
-        {uploadingResume ? (
+        {isSaving ? (
           <p className={styles.uploadPrompt}>Uploading...</p>
+        ) : resumeFile ? (
+          <>
+            <p className={styles.uploadFileName}>{resumeFile.name}</p>
+            <p className={styles.uploadHint}>Save to upload this file</p>
+          </>
         ) : resumePath ? (
           <>
             <p className={styles.uploadFileName}>Resume on file</p>
@@ -54,10 +61,10 @@ export const ResumeSection = ({
         )}
         <OutlineButton
           type="button"
-          disabled={uploadingResume}
+          disabled={isSaving}
           onClick={() => fileInputRef.current?.click()}
         >
-          {resumePath ? 'Replace File' : 'Choose File'}
+          {hasResume ? 'Replace File' : 'Choose File'}
         </OutlineButton>
         <input
           ref={fileInputRef}

@@ -3,6 +3,14 @@ import { OPPORTUNITY_TYPE_DISPLAY_TO_DB, WORK_ENV_DISPLAY_TO_DB } from '../utils
 import { MONTHS } from '../utils/constants';
 import type { Experience, Skill } from '../utils/types';
 
+interface BasicInfoSaveResult {
+  headshotUrl?: string;
+}
+
+interface ResumeSaveResult {
+  resumeUrl?: string;
+}
+
 const monthNameToInt = (name: string): number | null => {
   const idx = MONTHS.indexOf(name);
   return idx >= 0 ? idx + 1 : null;
@@ -12,14 +20,18 @@ export const saveBasicInfo = async (data: {
   firstName: string;
   lastName: string;
   aboutMe: string;
-}): Promise<boolean> => {
-  return (
-    (await apiPatch('/api/profile/basic-info', {
-      firstName: data.firstName || null,
-      lastName: data.lastName || null,
-      aboutMe: data.aboutMe || null,
-    })) !== null
-  );
+  headshotFile: File | null;
+}): Promise<BasicInfoSaveResult | null> => {
+  const form = new FormData();
+  form.append('firstName', data.firstName);
+  form.append('lastName', data.lastName);
+  form.append('aboutMe', data.aboutMe);
+
+  if (data.headshotFile) {
+    form.append('headshot', data.headshotFile);
+  }
+
+  return apiPatchForm<BasicInfoSaveResult>('/api/profile/basic-info', form);
 };
 
 export const saveEducation = async (data: {
@@ -42,28 +54,18 @@ export const saveResumeLinks = async (data: {
   linkedinUrl: string;
   githubUrl: string;
   portfolioUrl: string;
-}): Promise<boolean> => {
-  return (
-    (await apiPatch('/api/profile/resume', {
-      linkedInUrl: data.linkedinUrl || null,
-      githubUrl: data.githubUrl || null,
-      portfolioUrl: data.portfolioUrl || null,
-    })) !== null
-  );
-};
-
-export const uploadHeadshot = async (file: File): Promise<string | null> => {
+  resumeFile: File | null;
+}): Promise<ResumeSaveResult | null> => {
   const form = new FormData();
-  form.append('headshot', file);
-  const res = await apiPatchForm<{ headshotUrl: string }>('/api/profile/headshot', form);
-  return res?.headshotUrl ?? null;
-};
+  form.append('linkedInUrl', data.linkedinUrl);
+  form.append('githubUrl', data.githubUrl);
+  form.append('portfolioUrl', data.portfolioUrl);
 
-export const uploadResumeFile = async (file: File): Promise<string | null> => {
-  const form = new FormData();
-  form.append('resume', file);
-  const res = await apiPatchForm<{ resumeUrl: string }>('/api/profile/resume', form);
-  return res?.resumeUrl ?? null;
+  if (data.resumeFile) {
+    form.append('resume', data.resumeFile);
+  }
+
+  return apiPatchForm<ResumeSaveResult>('/api/profile/resume', form);
 };
 
 export const saveWorkPrefs = async (data: {
