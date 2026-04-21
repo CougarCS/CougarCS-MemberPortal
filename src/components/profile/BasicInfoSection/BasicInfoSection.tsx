@@ -5,7 +5,7 @@ import { SectionShell } from '../SectionShell/SectionShell';
 import { FieldGroup } from '../components/FieldGroup/FieldGroup';
 import { FieldRow } from '../components/FieldRow/FieldRow';
 import { FormInput } from '../components/FormInput/FormInput';
-import { OutlineButton } from '../components/OutlineButton/OutlineButton';
+import { OutlineButton } from '../../OutlineButton/OutlineButton';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 import iconUser from '../../../assets/icon-user.svg';
 

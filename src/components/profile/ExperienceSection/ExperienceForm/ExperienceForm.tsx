@@ -6,8 +6,8 @@ import { SkillCombobox } from '../../SkillsSection/SkillsComboBox/SkillsComboBox
 import { FieldGroup } from '../../components/FieldGroup/FieldGroup';
 import { FieldRow } from '../../components/FieldRow/FieldRow';
 import { FormInput, FormSelect } from '../../components/FormInput/FormInput';
-import { OutlineButton } from '../../components/OutlineButton/OutlineButton';
-import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton';
+import { OutlineButton } from '../../../OutlineButton/OutlineButton';
+import { PrimaryButton } from '../../../PrimaryButton/PrimaryButton';
 
 const BLANK: Omit<Experience, 'id'> = {
   title: '',

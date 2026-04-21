@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
+import { PageLayout } from '../../components/PageLayout/PageLayout';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav/ProfileNav';
 import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
@@ -255,13 +257,13 @@ export const ProfilePage = () => {
 
   return (
     <FormProvider {...form}>
-      <div className={styles.page}>
-        <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Your Profile</h1>
-          <p className={styles.pageSubtitle}>Manage your CougarCS profile</p>
-        </header>
+      <PageLayout>
+        <PageHeader
+          title="Your Profile"
+          subtitle={<p className={styles.pageSubtitle}>Manage your CougarCS profile</p>}
+        />
         {mainComponent}
-      </div>
+      </PageLayout>
     </FormProvider>
   );
 };

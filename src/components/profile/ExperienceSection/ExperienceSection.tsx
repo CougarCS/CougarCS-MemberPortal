@@ -5,7 +5,7 @@ import styles from './ExperienceSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { ExperienceForm } from './ExperienceForm/ExperienceForm';
 import { ExperienceCard } from './ExperienceCard/ExperienceCard';
-import { OutlineButton } from '../components/OutlineButton/OutlineButton';
+import { OutlineButton } from '../../OutlineButton/OutlineButton';
 import type { Experience, ProfileFormValues } from '../../../utils/types';
 
 export const ExperienceSection = () => {

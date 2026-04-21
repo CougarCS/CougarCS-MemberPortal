@@ -4,7 +4,7 @@ import styles from './ResumeSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { FieldGroup } from '../components/FieldGroup/FieldGroup';
 import { FormInput } from '../components/FormInput/FormInput';
-import { OutlineButton } from '../components/OutlineButton/OutlineButton';
+import { OutlineButton } from '../../OutlineButton/OutlineButton';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 import iconUpload from '../../../assets/icon-upload.svg';
 

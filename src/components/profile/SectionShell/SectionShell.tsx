@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import styles from './section.module.css';
-import { PrimaryButton } from '../components/PrimaryButton/PrimaryButton';
+import { PrimaryButton } from '../../PrimaryButton/PrimaryButton';
 import type { SaveState } from '../../../utils/types';
 
 interface Props {

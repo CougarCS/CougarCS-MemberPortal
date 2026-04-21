@@ -1,5 +1,7 @@
 import styles from './page.module.css';
 import { useGreeting } from '../../utils/useGreeting';
+import { PageLayout } from '../../components/PageLayout/PageLayout';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { MemberStatusCard } from '../../components/home/MemberStatusCard/MemberStatusCard';
 import { LeaderboardCard } from '../../components/home/LeaderboardCard/LeaderboardCard';
 import type { LeaderboardEntry } from '../../components/home/LeaderboardCard/LeaderboardCard';
@@ -101,13 +103,11 @@ export const HomePage = () => {
   const greeting = useGreeting();
 
   return (
-    <div className={styles.page}>
-      <header className={styles.pageHeader}>
-        <p className={styles.greeting}>{greeting},</p>
-        <h1 className={styles.pageTitle}>
-          {MEMBER.firstName} {MEMBER.lastName}
-        </h1>
-      </header>
+    <PageLayout>
+      <PageHeader
+        title={`${MEMBER.firstName} ${MEMBER.lastName}`}
+        eyebrow={<p className={styles.greeting}>{greeting},</p>}
+      />
 
       <div className={styles.body}>
         <div className={styles.row1}>
@@ -128,6 +128,6 @@ export const HomePage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 };
