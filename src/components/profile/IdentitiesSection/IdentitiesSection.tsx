@@ -27,7 +27,7 @@ export const IdentitiesSection = ({ saveState, onSave }: Props) => {
     <SectionShell
       id="personal-identities"
       title="Personal Identities"
-      desc="Optional info that we use to internally collect demographic data. Your individual data is NOT shared with companies or any 3rd party organizations."
+      desc="Optional info that we use to internally collect demographic data.Your individual data is NOT shared with companies or any 3rd party organizations."
       saveState={saveState}
       onSave={onSave}
     >
