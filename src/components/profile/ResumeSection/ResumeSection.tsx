@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import styles from './ResumeSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { FieldGroup } from '../components/FieldGroup/FieldGroup';
@@ -24,8 +24,8 @@ export const ResumeSection = ({
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { register, watch } = useFormContext<ProfileFormValues>();
-  const resumePath = watch('resumeUrl');
+  const { control, register } = useFormContext<ProfileFormValues>();
+  const resumePath = useWatch({ control, name: 'resumeUrl' });
 
   return (
     <SectionShell

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import styles from './BasicInfoSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { FieldGroup } from '../components/FieldGroup/FieldGroup';
@@ -17,6 +17,13 @@ interface Props {
   onSave?: () => void;
 }
 
+const AboutMeCharCount = () => {
+  const { control } = useFormContext<ProfileFormValues>();
+  const aboutMe = useWatch({ control, name: 'aboutMe' }) ?? '';
+
+  return <span className={styles.charCount}>{aboutMe.length}/1000</span>;
+};
+
 export const BasicInfoSection = ({
   headshotUrl,
   uploadingHeadshot,
@@ -25,8 +32,7 @@ export const BasicInfoSection = ({
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { register, watch } = useFormContext<ProfileFormValues>();
-  const aboutMe = watch('aboutMe') ?? '';
+  const { register } = useFormContext<ProfileFormValues>();
 
   return (
     <SectionShell
@@ -94,7 +100,7 @@ export const BasicInfoSection = ({
 
       <FieldGroup label="About me">
         <textarea className={styles.textarea} rows={5} maxLength={1000} {...register('aboutMe')} />
-        <span className={styles.charCount}>{aboutMe.length}/1000</span>
+        <AboutMeCharCount />
       </FieldGroup>
     </SectionShell>
   );

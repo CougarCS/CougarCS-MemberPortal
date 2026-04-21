@@ -47,6 +47,10 @@ export const ProfilePage = () => {
 
   const setSaveState = useCallback((section: string, state: SaveState) => {
     setSaveStates((prev) => {
+      if (prev[section] === state) {
+        return prev;
+      }
+
       return { ...prev, [section]: state };
     });
   }, []);
@@ -67,7 +71,7 @@ export const ProfilePage = () => {
   );
 
   const form = useForm<ProfileFormValues>({ defaultValues: DEFAULT_VALUES });
-  const { watch, getValues, setValue, reset } = form;
+  const { subscribe, getValues, setValue, reset } = form;
   const initializedRef = useRef(false);
 
   useEffect(() => {
@@ -90,20 +94,22 @@ export const ProfilePage = () => {
   }, [reset]);
 
   useEffect(() => {
-    const sub = watch((_, { name }) => {
-      if (!initializedRef.current) {
-        return;
-      }
-      const section = name && FIELD_TO_SECTION[name.split('.')[0]];
-      if (section) {
-        setSaveState(section, 'unsaved');
-      }
+    const unsubscribe = subscribe({
+      formState: { values: true },
+      callback: ({ name }) => {
+        if (!initializedRef.current || !name) {
+          return;
+        }
+
+        const section = FIELD_TO_SECTION[name.split('.')[0]];
+        if (section) {
+          setSaveState(section, 'unsaved');
+        }
+      },
     });
 
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [watch, setSaveState]);
+    return unsubscribe;
+  }, [subscribe, setSaveState]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });

@@ -1,4 +1,4 @@
-import { useForm, useController } from 'react-hook-form';
+import { useForm, useController, useWatch } from 'react-hook-form';
 import { MONTHS } from '../../../../utils/constants';
 import styles from './ExperienceForm.module.css';
 import type { Experience, Skill } from '../../../../utils/types';
@@ -30,13 +30,13 @@ interface Props {
 }
 
 export const ExperienceForm = ({ initial = BLANK, opState, onSave, onCancel }: Props) => {
-  const { register, handleSubmit, watch, control } = useForm<Omit<Experience, 'id'>>({
+  const { register, handleSubmit, control } = useForm<Omit<Experience, 'id'>>({
     defaultValues: initial,
   });
 
   const { field: skillsField } = useController({ name: 'skills', control });
 
-  const isCurrent = watch('current');
+  const isCurrent = useWatch({ control, name: 'current' });
 
   return (
     <div className={styles.expForm}>
