@@ -100,7 +100,7 @@ export const LoginPage = () => {
             type="password"
             {...register('password')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             required
             autoComplete="current-password"
           />

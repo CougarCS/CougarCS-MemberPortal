@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
 import { PageLayout } from '../../components/PageLayout/PageLayout';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
-import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav/ProfileNav';
+import { ProfileNav } from '../../components/profile/ProfileNav/ProfileNav';
 import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
 import { BasicInfoSection } from '../../components/profile/BasicInfoSection/BasicInfoSection';
@@ -29,7 +29,6 @@ import { IdentitiesSection } from '../../components/profile/IdentitiesSection/Id
 import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
 
 export const ProfilePage = () => {
-  const [activeSection, setActiveSection] = useState<SectionId>('basic-information');
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(false);
   const [headshotUrl, setHeadshotUrl] = useState('');
@@ -105,39 +104,6 @@ export const ProfilePage = () => {
       sub.unsubscribe();
     };
   }, [watch, setSaveState]);
-
-  useEffect(() => {
-    // this was causing the sidebar bug dont remove
-    if (profileLoading) return;
-
-    const updateActive = () => {
-      const scrollY = window.scrollY;
-      const windowH = window.innerHeight;
-      const docH = document.documentElement.scrollHeight;
-
-      if (scrollY + windowH >= docH - 50) {
-        setActiveSection(NAV_SECTIONS[NAV_SECTIONS.length - 1].id);
-        return;
-      }
-
-      const threshold = scrollY + windowH * 0.25;
-      let current: SectionId = NAV_SECTIONS[0].id;
-
-      for (const { id } of NAV_SECTIONS) {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= threshold) {
-          current = id;
-        }
-      }
-      setActiveSection(current);
-    };
-
-    updateActive();
-    window.addEventListener('scroll', updateActive, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', updateActive);
-    };
-  }, [profileLoading]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -226,7 +192,7 @@ export const ProfilePage = () => {
     <p style={{ padding: '2rem' }}>Loading...</p>
   ) : (
     <div className={styles.body}>
-      <ProfileNav activeSection={activeSection} onNavigate={scrollToSection} />
+      <ProfileNav onNavigate={scrollToSection} />
       <main className={styles.content}>
         <BasicInfoSection
           headshotUrl={headshotUrl}

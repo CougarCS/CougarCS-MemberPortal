@@ -86,7 +86,7 @@ export const SignupPage = () => {
             type="password"
             {...register('password')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             required
             autoComplete="new-password"
           />
@@ -101,7 +101,7 @@ export const SignupPage = () => {
             type="password"
             {...register('confirmPassword')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Confirm your password"
             required
             autoComplete="new-password"
           />
