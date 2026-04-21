@@ -55,6 +55,7 @@ export const ProfilePage = () => {
       setSaveState(section, 'saving');
       const ok = await fn();
       setSaveState(section, ok ? 'saved' : 'unsaved');
+
       if (ok) {
         setTimeout(() => {
           setSaveState(section, 'idle');
@@ -71,16 +72,19 @@ export const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const data = await loadProfile();
+
       if (!data) {
         setProfileError(false);
         setProfileLoading(false);
         return;
       }
+
       setHeadshotUrl(data.headshotUrl);
       reset(data);
       initializedRef.current = true;
       setProfileLoading(false);
     };
+
     fetchProfile();
   }, [reset]);
 
@@ -94,6 +98,7 @@ export const ProfilePage = () => {
         setSaveState(section, 'unsaved');
       }
     });
+
     return () => {
       sub.unsubscribe();
     };
@@ -115,6 +120,7 @@ export const ProfilePage = () => {
 
       const threshold = scrollY + windowH * 0.25;
       let current: SectionId = NAV_SECTIONS[0].id;
+
       for (const { id } of NAV_SECTIONS) {
         const el = document.getElementById(id);
         if (el && el.offsetTop <= threshold) {
@@ -129,7 +135,7 @@ export const ProfilePage = () => {
     return () => {
       window.removeEventListener('scroll', updateActive);
     };
-  }, []);
+  }, [profileLoading]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -212,12 +218,40 @@ export const ProfilePage = () => {
     });
   };
 
-  if (profileLoading) {
-    return null;
-  }
-  if (profileError) {
-    return <p style={{ padding: '2rem' }}>Failed to load profile. Please refresh the page.</p>;
-  }
+  const mainComponent = profileError ? (
+    <p style={{ padding: '2rem' }}>Failed to load profile. Please refresh the page.</p>
+  ) : profileLoading ? (
+    <p style={{ padding: '2rem' }}>Loading...</p>
+  ) : (
+    <div className={styles.body}>
+      <ProfileNav activeSection={activeSection} onNavigate={scrollToSection} />
+      <main className={styles.content}>
+        <BasicInfoSection
+          headshotUrl={headshotUrl}
+          uploadingHeadshot={uploadingHeadshot}
+          saveState={saveStates['basic-information']}
+          onHeadshotFile={handleHeadshotFile}
+          onSave={handleSaveBasicInfo}
+        />
+        <EducationSection saveState={saveStates['education']} onSave={handleSaveEducation} />
+        <ExperienceSection />
+        <SkillsSection saveState={saveStates['skills']} onSave={handleSaveSkills} />
+        <ResumeSection
+          uploadingResume={uploadingResume}
+          saveState={saveStates['resume']}
+          onResumeFile={handleResumeFile}
+          onResumeDownload={handleResumeDownload}
+          onSave={handleSaveResumeLinks}
+        />
+        <WorkPrefsSection saveState={saveStates['work-preferences']} onSave={handleSaveWorkPrefs} />
+        <LocationSection saveState={saveStates['location']} onSave={handleSaveLocation} />
+        <IdentitiesSection
+          saveState={saveStates['personal-identities']}
+          onSave={handleSaveIdentities}
+        />
+      </main>
+    </div>
+  );
 
   return (
     <FormProvider {...form}>
@@ -226,37 +260,7 @@ export const ProfilePage = () => {
           <h1 className={styles.pageTitle}>Your Profile</h1>
           <p className={styles.pageSubtitle}>Manage your CougarCS profile</p>
         </header>
-        <div className={styles.body}>
-          <ProfileNav activeSection={activeSection} onNavigate={scrollToSection} />
-          <main className={styles.content}>
-            <BasicInfoSection
-              headshotUrl={headshotUrl}
-              uploadingHeadshot={uploadingHeadshot}
-              saveState={saveStates['basic-information']}
-              onHeadshotFile={handleHeadshotFile}
-              onSave={handleSaveBasicInfo}
-            />
-            <EducationSection saveState={saveStates['education']} onSave={handleSaveEducation} />
-            <ExperienceSection />
-            <SkillsSection saveState={saveStates['skills']} onSave={handleSaveSkills} />
-            <ResumeSection
-              uploadingResume={uploadingResume}
-              saveState={saveStates['resume']}
-              onResumeFile={handleResumeFile}
-              onResumeDownload={handleResumeDownload}
-              onSave={handleSaveResumeLinks}
-            />
-            <WorkPrefsSection
-              saveState={saveStates['work-preferences']}
-              onSave={handleSaveWorkPrefs}
-            />
-            <LocationSection saveState={saveStates['location']} onSave={handleSaveLocation} />
-            <IdentitiesSection
-              saveState={saveStates['personal-identities']}
-              onSave={handleSaveIdentities}
-            />
-          </main>
-        </div>
+        {mainComponent}
       </div>
     </FormProvider>
   );

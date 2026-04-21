@@ -70,7 +70,7 @@ const EVENTS: Event[] = [
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   {
-    id: '5',
+    id: '6',
     title: 'Hackathon Kickoff',
     date: 'Sunday, May 10',
     time: '10:00am–11:00pm',
@@ -94,6 +94,8 @@ const RESOURCES: Resource[] = [
     description: 'Internship and full-time roles sent directly to CougarCS.',
   },
 ];
+
+// end of fake data
 
 export const HomePage = () => {
   const greeting = useGreeting();
