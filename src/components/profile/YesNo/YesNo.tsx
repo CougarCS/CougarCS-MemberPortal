@@ -1,4 +1,4 @@
-import styles from './section.module.css';
+import styles from './YesNo.module.css';
 
 interface Props {
   value: boolean;

@@ -1,6 +1,8 @@
 import { useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { FieldRow } from '../components/FieldRow/FieldRow';
+import { FormInput, FormSelect } from '../components/FormInput/FormInput';
 import { MONTHS } from '../../../utils/constants';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 
@@ -20,44 +22,34 @@ export const EducationSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Major</label>
-        <input
-          className={styles.input}
-          {...register('major')}
-          placeholder="e.g. Computer Science"
-        />
-      </div>
+      <FieldGroup label="Major">
+        <FormInput {...register('major')} placeholder="e.g. Computer Science" />
+      </FieldGroup>
 
-      <div className={styles.fieldRow}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Graduation Year</label>
-          <input
-            className={styles.input}
+      <FieldRow>
+        <FieldGroup label="Graduation Year">
+          <FormInput
             type="number"
             min={2000}
             max={2040}
             placeholder="2026"
             {...register('graduationYear')}
           />
-        </div>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Graduation Month</label>
-          <select className={styles.input} {...register('graduationMonth')}>
+        </FieldGroup>
+        <FieldGroup label="Graduation Month">
+          <FormSelect {...register('graduationMonth')}>
             <option value="">Select month</option>
             {MONTHS.map((m) => (
               <option key={m} value={m}>
                 {m}
               </option>
             ))}
-          </select>
-        </div>
-      </div>
+          </FormSelect>
+        </FieldGroup>
+      </FieldRow>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>GPA</label>
-        <input
-          className={styles.input}
+      <FieldGroup label="GPA">
+        <FormInput
           type="number"
           min={0}
           max={4}
@@ -65,7 +57,7 @@ export const EducationSection = ({ saveState, onSave }: Props) => {
           placeholder="e.g. 3.5"
           {...register('gpa')}
         />
-      </div>
+      </FieldGroup>
     </SectionShell>
   );
 };

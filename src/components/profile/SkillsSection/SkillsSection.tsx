@@ -1,7 +1,7 @@
 import { useController, useFormContext } from 'react-hook-form';
 import { SkillCombobox } from './SkillsComboBox/SkillsComboBox';
-import styles from './section.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
 import type { SaveState, ProfileFormValues, Skill } from '../../../utils/types';
 
 interface Props {
@@ -21,13 +21,12 @@ export const SkillsSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Skills</label>
+      <FieldGroup label="Skills">
         <SkillCombobox
           selected={field.value ?? []}
           onChange={(skills: Skill[]) => field.onChange(skills)}
         />
-      </div>
+      </FieldGroup>
     </SectionShell>
   );
 };

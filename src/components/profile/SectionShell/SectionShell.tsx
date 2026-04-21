@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import styles from './section.module.css';
+import { PrimaryButton } from '../components/PrimaryButton/PrimaryButton';
 import type { SaveState } from '../../../utils/types';
 
 interface Props {
@@ -33,14 +34,9 @@ export const SectionShell = ({ id, title, desc, children, saveState = 'idle', on
               {SAVE_STATUS_TEXT[saveState]}
             </span>
           )}
-          <button
-            type="button"
-            className={styles.primaryBtn}
-            onClick={onSave}
-            disabled={saveState === 'saving'}
-          >
+          <PrimaryButton type="button" onClick={onSave} disabled={saveState === 'saving'}>
             {saveState === 'saving' ? 'Saving...' : 'Save'}
-          </button>
+          </PrimaryButton>
         </div>
       )}
     </div>

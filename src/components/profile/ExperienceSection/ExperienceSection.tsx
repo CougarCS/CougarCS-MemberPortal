@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
 import { createExperience, updateExperience, deleteExperience } from '../../../lib/save';
-import styles from './section.module.css';
+import styles from './ExperienceSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { ExperienceForm } from './ExperienceForm/ExperienceForm';
 import { ExperienceCard } from './ExperienceCard/ExperienceCard';
+import { OutlineButton } from '../components/OutlineButton/OutlineButton';
 import type { Experience, ProfileFormValues } from '../../../utils/types';
 
 export const ExperienceSection = () => {
@@ -77,9 +78,9 @@ export const ExperienceSection = () => {
     >
       <div className={styles.listHeader}>
         <span className={styles.listHeaderLabel}>Experience</span>
-        <button type="button" className={styles.outlineBtn} onClick={openAdd}>
+        <OutlineButton type="button" onClick={openAdd}>
           + Add new experience
-        </button>
+        </OutlineButton>
       </div>
 
       {showForm && (

@@ -2,8 +2,12 @@ import { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import styles from './BasicInfoSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { FieldRow } from '../components/FieldRow/FieldRow';
+import { FormInput } from '../components/FormInput/FormInput';
+import { OutlineButton } from '../components/OutlineButton/OutlineButton';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
-import iconUser from '../../assets/icon-user.svg';
+import iconUser from '../../../assets/icon-user.svg';
 
 interface Props {
   headshotUrl: string;
@@ -52,14 +56,13 @@ export const BasicInfoSection = ({
             <br />
             (max file size 2 MB)
           </p>
-          <button
+          <OutlineButton
             type="button"
-            className={styles.outlineBtn}
             disabled={uploadingHeadshot}
             onClick={() => fileInputRef.current?.click()}
           >
             {uploadingHeadshot ? 'Uploading...' : headshotUrl ? 'Replace Photo' : 'Upload Photo'}
-          </button>
+          </OutlineButton>
           <input
             ref={fileInputRef}
             type="file"
@@ -76,27 +79,23 @@ export const BasicInfoSection = ({
         </div>
       </div>
 
-      <div className={styles.fieldRow}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>First Name</label>
-          <input className={styles.input} {...register('firstName')} />
-        </div>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Last Name</label>
-          <input className={styles.input} {...register('lastName')} />
-        </div>
-      </div>
+      <FieldRow>
+        <FieldGroup label="First Name">
+          <FormInput {...register('firstName')} />
+        </FieldGroup>
+        <FieldGroup label="Last Name">
+          <FormInput {...register('lastName')} />
+        </FieldGroup>
+      </FieldRow>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Email Address</label>
-        <input className={styles.input} type="email" {...register('email')} disabled />
-      </div>
+      <FieldGroup label="Email Address">
+        <FormInput type="email" {...register('email')} disabled />
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>About me</label>
+      <FieldGroup label="About me">
         <textarea className={styles.textarea} rows={5} maxLength={1000} {...register('aboutMe')} />
         <span className={styles.charCount}>{aboutMe.length}/1000</span>
-      </div>
+      </FieldGroup>
     </SectionShell>
   );
 };

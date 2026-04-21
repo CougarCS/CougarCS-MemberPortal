@@ -1,6 +1,7 @@
 import { useController, useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { PillGroup, Pill } from '../components/PillGroup/PillGroup';
 import { ETHNICITIES } from '../../../utils/constants';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 
@@ -30,39 +31,30 @@ export const IdentitiesSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>What is your gender?</label>
-        <div className={styles.pillGroup}>
+      <FieldGroup label="What is your gender?">
+        <PillGroup>
           {['Male', 'Female', 'Non-Binary'].map((g) => (
-            <button
+            <Pill
               key={g}
               type="button"
-              className={`${styles.pill} ${genderField.value === g ? styles.pillActive : ''}`}
+              active={genderField.value === g}
               onClick={() => genderField.onChange(genderField.value === g ? '' : g)}
             >
               {g}
-            </button>
+            </Pill>
           ))}
-        </div>
-      </div>
+        </PillGroup>
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>
-          What is your racial/ethnic identity? (Select all that apply)
-        </label>
-        <div className={styles.pillGroup}>
+      <FieldGroup label="What is your racial/ethnic identity? (Select all that apply)">
+        <PillGroup>
           {ETHNICITIES.map((e) => (
-            <button
-              key={e}
-              type="button"
-              className={`${styles.pill} ${ethnicities.includes(e) ? styles.pillActive : ''}`}
-              onClick={() => toggle(e)}
-            >
+            <Pill key={e} type="button" active={ethnicities.includes(e)} onClick={() => toggle(e)}>
               {e}
-            </button>
+            </Pill>
           ))}
-        </div>
-      </div>
+        </PillGroup>
+      </FieldGroup>
     </SectionShell>
   );
 };

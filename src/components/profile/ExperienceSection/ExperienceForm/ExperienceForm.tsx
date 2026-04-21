@@ -1,8 +1,13 @@
 import { useForm, useController } from 'react-hook-form';
 import { MONTHS } from '../../../../utils/constants';
-import styles from './section.module.css';
+import styles from './ExperienceForm.module.css';
 import type { Experience, Skill } from '../../../../utils/types';
 import { SkillCombobox } from '../../SkillsSection/SkillsComboBox/SkillsComboBox';
+import { FieldGroup } from '../../components/FieldGroup/FieldGroup';
+import { FieldRow } from '../../components/FieldRow/FieldRow';
+import { FormInput, FormSelect } from '../../components/FormInput/FormInput';
+import { OutlineButton } from '../../components/OutlineButton/OutlineButton';
+import { PrimaryButton } from '../../components/PrimaryButton/PrimaryButton';
 
 const BLANK: Omit<Experience, 'id'> = {
   title: '',
@@ -29,106 +34,85 @@ export const ExperienceForm = ({ initial = BLANK, opState, onSave, onCancel }: P
     defaultValues: initial,
   });
 
-  // skills is an array of objects — useController handles it as a controlled field
   const { field: skillsField } = useController({ name: 'skills', control });
 
-  // watch 'current' so we can disable the end-date fields reactively
   const isCurrent = watch('current');
 
   return (
     <div className={styles.expForm}>
-      <div className={styles.fieldRow}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Job Title</label>
-          <input className={styles.input} {...register('title')} />
-        </div>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Company</label>
-          <input className={styles.input} {...register('company')} />
-        </div>
-      </div>
+      <FieldRow>
+        <FieldGroup label="Job Title">
+          <FormInput {...register('title')} />
+        </FieldGroup>
+        <FieldGroup label="Company">
+          <FormInput {...register('company')} />
+        </FieldGroup>
+      </FieldRow>
 
-      <div className={styles.fieldRow}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Start Month</label>
-          <select className={styles.input} {...register('startMonth')}>
+      <FieldRow>
+        <FieldGroup label="Start Month">
+          <FormSelect {...register('startMonth')}>
             <option value="">Month</option>
             {MONTHS.map((m) => (
               <option key={m}>{m}</option>
             ))}
-          </select>
-        </div>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Start Year</label>
-          <input className={styles.input} placeholder="YYYY" {...register('startYear')} />
-        </div>
-      </div>
+          </FormSelect>
+        </FieldGroup>
+        <FieldGroup label="Start Year">
+          <FormInput placeholder="YYYY" {...register('startYear')} />
+        </FieldGroup>
+      </FieldRow>
 
-      <div className={styles.fieldRow}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>End Month</label>
-          <select className={styles.input} disabled={isCurrent} {...register('endMonth')}>
+      <FieldRow>
+        <FieldGroup label="End Month">
+          <FormSelect disabled={isCurrent} {...register('endMonth')}>
             <option value="">Month</option>
             {MONTHS.map((m) => (
               <option key={m}>{m}</option>
             ))}
-          </select>
-        </div>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>End Year</label>
-          <input
-            className={styles.input}
-            placeholder="YYYY"
-            disabled={isCurrent}
-            {...register('endYear')}
-          />
-        </div>
-      </div>
+          </FormSelect>
+        </FieldGroup>
+        <FieldGroup label="End Year">
+          <FormInput placeholder="YYYY" disabled={isCurrent} {...register('endYear')} />
+        </FieldGroup>
+      </FieldRow>
 
       <label className={styles.checkboxLabel}>
         <input type="checkbox" {...register('current')} />I currently work here
       </label>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Location</label>
-        <input
-          className={styles.input}
-          placeholder="City, State, Country"
-          {...register('location')}
-        />
-      </div>
+      <FieldGroup label="Location">
+        <FormInput placeholder="City, State, Country" {...register('location')} />
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Description</label>
+      <FieldGroup label="Description">
         <textarea className={styles.textarea} rows={4} {...register('description')} />
-      </div>
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>Skills Used</label>
+      <FieldGroup label="Skills Used">
         <SkillCombobox
           selected={skillsField.value ?? []}
           onChange={(skills: Skill[]) => {
             skillsField.onChange(skills);
           }}
         />
-      </div>
+      </FieldGroup>
 
       {opState === 'error' && <p className={styles.errorText}>Failed to save. Please try again.</p>}
 
       <div className={styles.formActions}>
-        <button type="button" className={styles.outlineBtn} onClick={onCancel}>
+        <OutlineButton type="button" onClick={onCancel}>
           Cancel
-        </button>
-        <button
+        </OutlineButton>
+        <PrimaryButton
           type="button"
-          className={styles.primaryBtn}
           onClick={() => {
             handleSubmit(onSave)();
           }}
           disabled={opState === 'saving'}
         >
           {opState === 'saving' ? 'Saving...' : 'Save'}
-        </button>
+        </PrimaryButton>
       </div>
     </div>
   );

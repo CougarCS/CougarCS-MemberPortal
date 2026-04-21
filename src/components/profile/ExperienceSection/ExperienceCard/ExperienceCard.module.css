@@ -1,0 +1,83 @@
+.expCard {
+  padding: 1.125rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.expCard:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.expCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.expCardActions {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.expTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 0 0 0.2rem;
+}
+
+.expCompany {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0 0 0.2rem;
+}
+
+.expMeta {
+  font-size: 0.8rem;
+  color: var(--neutral-grey);
+  margin: 0 0 0.125rem;
+}
+
+.iconBtn {
+  padding: 0.35rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.iconBtn:hover {
+  background: var(--cougar-red-light);
+}
+
+.expDesc {
+  font-size: 0.8375rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0.5rem 0 0;
+  white-space: pre-wrap;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.tag {
+  padding: 0.2rem 0.7rem;
+  border-radius: 100px;
+  background: var(--light-grey);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--neutral-grey);
+}

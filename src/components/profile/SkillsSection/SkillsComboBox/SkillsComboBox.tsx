@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import styles from './section.module.css';
+import styles from './SkillsComboBox.module.css';
+import { FormInput } from '../../components/FormInput/FormInput';
 import { useSkills } from '../../../../lib/useSkills';
 import type { Skill } from '../../../../utils/types';
 
@@ -62,9 +63,8 @@ export const SkillCombobox = ({ selected, onChange }: Props) => {
       )}
 
       <div className={styles.skillsCombobox} ref={containerRef}>
-        <input
+        <FormInput
           ref={inputRef}
-          className={styles.input}
           placeholder="Search skills..."
           value={query}
           onChange={(e) => {

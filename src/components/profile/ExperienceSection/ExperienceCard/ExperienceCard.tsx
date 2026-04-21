@@ -1,7 +1,7 @@
-import styles from './section.module.css';
+import styles from './ExperienceCard.module.css';
 import type { Experience } from '../../../../utils/types';
-import iconEdit from '../../assets/icon-edit.svg';
-import iconTrash from '../../assets/icon-trash.svg';
+import iconEdit from '../../../../assets/icon-edit.svg';
+import iconTrash from '../../../../assets/icon-trash.svg';
 
 interface Props {
   exp: Experience;

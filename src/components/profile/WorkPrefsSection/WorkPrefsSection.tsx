@@ -1,7 +1,9 @@
 import { useController, useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { YesNo } from '../YesNo/YesNo';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { PillGroup, Pill } from '../components/PillGroup/PillGroup';
+import { InlineRow } from '../components/InlineRow/InlineRow';
 import { OPPORTUNITY_TYPES, WORK_ENVIRONMENTS } from '../../../utils/constants';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 
@@ -41,46 +43,39 @@ export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>
-          What kind of opportunities are you seeking? (Select all that apply)
-        </label>
-        <div className={styles.pillGroup}>
+      <FieldGroup label="What kind of opportunities are you seeking? (Select all that apply)">
+        <PillGroup>
           {OPPORTUNITY_TYPES.map((o) => (
-            <button
+            <Pill
               key={o}
               type="button"
-              className={`${styles.pill} ${opportunities.includes(o) ? styles.pillActive : ''}`}
+              active={opportunities.includes(o)}
               onClick={() => toggleOpp(o)}
             >
               {o}
-            </button>
+            </Pill>
           ))}
-        </div>
-      </div>
+        </PillGroup>
+      </FieldGroup>
 
-      <div className={styles.inlineRow}>
-        <span className={styles.inlineLabel}>Are you open to relocating for an opportunity?</span>
+      <InlineRow label="Are you open to relocating for an opportunity?">
         <YesNo value={relocateField.value} onChange={relocateField.onChange} />
-      </div>
+      </InlineRow>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>
-          What work environment(s) are you interested in? (Select all that apply)
-        </label>
-        <div className={styles.pillGroup}>
+      <FieldGroup label="What work environment(s) are you interested in? (Select all that apply)">
+        <PillGroup>
           {WORK_ENVIRONMENTS.map((env) => (
-            <button
+            <Pill
               key={env}
               type="button"
-              className={`${styles.pill} ${workEnvironments.includes(env) ? styles.pillActive : ''}`}
+              active={workEnvironments.includes(env)}
               onClick={() => toggleEnv(env)}
             >
               {env}
-            </button>
+            </Pill>
           ))}
-        </div>
-      </div>
+        </PillGroup>
+      </FieldGroup>
     </SectionShell>
   );
 };

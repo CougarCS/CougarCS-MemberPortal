@@ -165,7 +165,7 @@ export const Navbar = () => {
 
       {menuOpen && (
         <nav className={styles.mobileMenu}>
-          {NAV_LINKS.map((link) => (
+          {[...NAV_LINKS, ...DROPDOWN_NAV].map((link) => (
             <Link
               key={link.href}
               to={link.href}

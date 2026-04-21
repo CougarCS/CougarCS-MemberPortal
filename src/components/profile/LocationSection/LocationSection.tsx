@@ -1,7 +1,10 @@
 import { useController, useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
+import styles from './LocationSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { YesNo } from '../YesNo/YesNo';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { FormInput } from '../components/FormInput/FormInput';
+import { InlineRow } from '../components/InlineRow/InlineRow';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
 
 interface Props {
@@ -22,28 +25,22 @@ export const LocationSection = ({ saveState, onSave }: Props) => {
       onSave={onSave}
     >
       <div className={styles.threeCol}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>City</label>
-          <input className={styles.input} {...register('city')} placeholder="Houston" />
-        </div>
+        <FieldGroup label="City">
+          <FormInput {...register('city')} placeholder="Houston" />
+        </FieldGroup>
 
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>State</label>
-          <input className={styles.input} {...register('state')} placeholder="TX" maxLength={2} />
-        </div>
+        <FieldGroup label="State">
+          <FormInput {...register('state')} placeholder="TX" maxLength={2} />
+        </FieldGroup>
 
-        <div className={styles.fieldGroup}>
-          <label className={styles.label}>Zip Code</label>
-          <input className={styles.input} {...register('zip')} placeholder="77004" maxLength={10} />
-        </div>
+        <FieldGroup label="Zip Code">
+          <FormInput {...register('zip')} placeholder="77004" maxLength={10} />
+        </FieldGroup>
       </div>
 
-      <div className={styles.inlineRow}>
-        <span className={styles.inlineLabel}>
-          Are you authorized to work in the US without sponsorship?
-        </span>
+      <InlineRow label="Are you authorized to work in the US without sponsorship?">
         <YesNo value={authField.value} onChange={authField.onChange} />
-      </div>
+      </InlineRow>
     </SectionShell>
   );
 };

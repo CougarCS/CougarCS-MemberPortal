@@ -1,9 +1,12 @@
 import { useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
-import styles from './section.module.css';
+import styles from './ResumeSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
+import { FieldGroup } from '../components/FieldGroup/FieldGroup';
+import { FormInput } from '../components/FormInput/FormInput';
+import { OutlineButton } from '../components/OutlineButton/OutlineButton';
 import type { SaveState, ProfileFormValues } from '../../../utils/types';
-import iconUpload from '../../assets/icon-upload.svg';
+import iconUpload from '../../../assets/icon-upload.svg';
 
 interface Props {
   uploadingResume: boolean;
@@ -39,9 +42,9 @@ export const ResumeSection = ({
         ) : resumePath ? (
           <>
             <p className={styles.uploadFileName}>Resume on file</p>
-            <button type="button" className={styles.outlineBtn} onClick={onResumeDownload}>
+            <OutlineButton type="button" onClick={onResumeDownload}>
               View Resume
-            </button>
+            </OutlineButton>
           </>
         ) : (
           <>
@@ -49,14 +52,13 @@ export const ResumeSection = ({
             <p className={styles.uploadHint}>PDF only; up to 1 MB</p>
           </>
         )}
-        <button
+        <OutlineButton
           type="button"
-          className={styles.outlineBtn}
           disabled={uploadingResume}
           onClick={() => fileInputRef.current?.click()}
         >
           {resumePath ? 'Replace File' : 'Choose File'}
-        </button>
+        </OutlineButton>
         <input
           ref={fileInputRef}
           type="file"
@@ -72,8 +74,7 @@ export const ResumeSection = ({
         />
       </div>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>LinkedIn Profile</label>
+      <FieldGroup label="LinkedIn Profile">
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>linkedin.com/in/</span>
           <input
@@ -82,12 +83,15 @@ export const ResumeSection = ({
             placeholder="your-handle"
           />
         </div>
-      </div>
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>
-          GitHub <span className={styles.optionalTag}>Optional</span>
-        </label>
+      <FieldGroup
+        label={
+          <>
+            GitHub <span className={styles.optionalTag}>Optional</span>
+          </>
+        }
+      >
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>github.com/</span>
           <input
@@ -96,19 +100,21 @@ export const ResumeSection = ({
             placeholder="your-username"
           />
         </div>
-      </div>
+      </FieldGroup>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>
-          Portfolio <span className={styles.optionalTag}>Optional</span>
-        </label>
-        <input
-          className={styles.input}
+      <FieldGroup
+        label={
+          <>
+            Portfolio <span className={styles.optionalTag}>Optional</span>
+          </>
+        }
+      >
+        <FormInput
           type="url"
           {...register('portfolioUrl')}
           placeholder="https://yourportfolio.com"
         />
-      </div>
+      </FieldGroup>
     </SectionShell>
   );
 };
