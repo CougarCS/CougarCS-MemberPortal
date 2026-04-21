@@ -100,6 +100,9 @@ export const ProfilePage = () => {
   }, [watch, setSaveState]);
 
   useEffect(() => {
+    // this was causing the sidebar bug dont remove
+    if (profileLoading) return;
+
     const updateActive = () => {
       const scrollY = window.scrollY;
       const windowH = window.innerHeight;
