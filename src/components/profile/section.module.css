@@ -115,12 +115,6 @@
   text-transform: uppercase;
 }
 
-.fieldHint {
-  font-size: 0.8rem;
-  color: var(--neutral-grey);
-  margin: 0;
-}
-
 .input {
   box-sizing: border-box;
   width: 100%;
@@ -150,13 +144,16 @@ select.input {
 .input::placeholder {
   color: #b5b2ba;
 }
+
 .input:hover {
   border-color: #a0a0a8;
 }
+
 .input:focus {
   border-color: var(--cougar-red);
   box-shadow: 0 0 0 3px var(--cougar-red-light);
 }
+
 .input:disabled {
   background: var(--light-grey);
   color: var(--neutral-grey);
@@ -183,9 +180,11 @@ select.input {
 .textarea::placeholder {
   color: #b5b2ba;
 }
+
 .textarea:hover {
   border-color: #a0a0a8;
 }
+
 .textarea:focus {
   border-color: var(--cougar-red);
   box-shadow: 0 0 0 3px var(--cougar-red-light);
@@ -453,12 +452,14 @@ select.input {
   color: var(--text-h);
   margin: 0 0 0.2rem;
 }
+
 .expCompany {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--text-h);
   margin: 0 0 0.2rem;
 }
+
 .expMeta {
   font-size: 0.8rem;
   color: var(--neutral-grey);
@@ -517,11 +518,13 @@ select.input {
   font-weight: 500;
   color: var(--text-h);
 }
+
 .uploadHint {
   margin: 0;
   font-size: 0.75rem;
   color: var(--neutral-grey);
 }
+
 .uploadFileName {
   margin: 0;
   font-size: 0.875rem;

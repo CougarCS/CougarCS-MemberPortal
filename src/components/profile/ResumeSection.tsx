@@ -46,7 +46,7 @@ export const ResumeSection = ({
         ) : (
           <>
             <p className={styles.uploadPrompt}>Upload your resume</p>
-            <p className={styles.uploadHint}>PDF, DOC, DOCX — up to 10 MB</p>
+            <p className={styles.uploadHint}>PDF only; up to 1 MB</p>
           </>
         )}
         <button
