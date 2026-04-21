@@ -4,8 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
-  { label: 'Profile', href: '/profile' },
   { label: 'Home', href: '/home' },
+  { label: 'Profile', href: '/profile' },
 ];
 
 export const Navbar = () => {

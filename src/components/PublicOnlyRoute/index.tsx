@@ -9,7 +9,7 @@ export const PublicOnlyRoute = ({ children }: { children: ReactNode }) => {
     return null;
   }
   if (session) {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <>{children}</>;
