@@ -16,7 +16,7 @@ export const ExperienceCard = ({ exp, onEdit, onDelete }: Props) => (
         <h3 className={styles.expTitle}>{exp.title}</h3>
         <p className={styles.expCompany}>{exp.company}</p>
         <p className={styles.expMeta}>
-          {exp.startMonth} {exp.startYear} –{' '}
+          {exp.startMonth} {exp.startYear} -{' '}
           {exp.current ? 'Present' : `${exp.endMonth} ${exp.endYear}`}
         </p>
         {exp.location && <p className={styles.expMeta}>{exp.location}</p>}

@@ -30,7 +30,7 @@ const EVENTS: Event[] = [
     id: '1',
     title: 'Intro to React',
     date: 'Saturday, Apr 25',
-    time: '5:30pm–7:00pm',
+    time: '5:30pm-7:00pm',
     description: 'Beginner workshop on React fundamentals.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -39,7 +39,7 @@ const EVENTS: Event[] = [
     id: '2',
     title: 'Resume Review',
     date: 'Tuesday, Apr 28',
-    time: '4:00pm–6:00pm',
+    time: '4:00pm-6:00pm',
     description: 'Get your resume reviewed by industry professionals.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -48,7 +48,7 @@ const EVENTS: Event[] = [
     id: '3',
     title: 'LeetCode Night',
     date: 'Saturday, May 2',
-    time: '6:00pm–8:00pm',
+    time: '6:00pm-8:00pm',
     description: 'Weekly competitive programming session.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -57,7 +57,7 @@ const EVENTS: Event[] = [
     id: '4',
     title: 'Industry Panel',
     date: 'Thursday, May 7',
-    time: '5:00pm–6:30pm',
+    time: '5:00pm-6:30pm',
     description: 'Hear from engineers at top tech companies.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -66,7 +66,7 @@ const EVENTS: Event[] = [
     id: '5',
     title: 'Hackathon Kickoff',
     date: 'Sunday, May 10',
-    time: '10:00am–11:00pm',
+    time: '10:00am-11:00pm',
     description: '24-hour hackathon presented by CougarCS.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -75,7 +75,7 @@ const EVENTS: Event[] = [
     id: '6',
     title: 'Hackathon Kickoff',
     date: 'Sunday, May 10',
-    time: '10:00am–11:00pm',
+    time: '10:00am-11:00pm',
     description: '24-hour hackathon presented by CougarCS.',
     flyerUrl:
       'https://plus.unsplash.com/premium_photo-1719297388945-76b5b5a42d43?q=80&w=2232&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
