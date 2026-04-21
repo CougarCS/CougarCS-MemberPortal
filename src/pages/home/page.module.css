@@ -43,7 +43,7 @@
 
 .row1 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 65fr 35fr;
   gap: 1.25rem;
   align-items: start;
 }

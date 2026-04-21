@@ -4,7 +4,7 @@ import { SignupPage } from './pages/signup/page';
 import { CheckEmailPage } from './pages/check-email/page';
 import { ProfilePage } from './pages/profile/page';
 import { HomePage } from './pages/home/page';
-import { Navbar } from './components/Navbar';
+import { Navbar } from './components/Navbar/Navbar';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 

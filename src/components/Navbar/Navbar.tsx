@@ -14,8 +14,10 @@ const DROPDOWN_NAV = [{ label: 'Profile', href: '/profile' }];
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [displayName, setDisplayName] = useState('');
-  const [headshotUrl, setHeadshotUrl] = useState('');
+  const [displayName, setDisplayName] = useState('Vultorz');
+  const [headshotUrl, setHeadshotUrl] = useState(
+    'https://yzqdfdzetgwvgxxpulys.supabase.co/storage/v1/object/public/event-flyers/8e4a9032-f17a-4b65-b773-593346ea05c0.png',
+  );
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -71,7 +73,7 @@ export const Navbar = () => {
   return (
     <div className={styles.navbar}>
       <div className={styles.navbarMain}>
-        <Link to="/profile" className={styles.logoLink}>
+        <Link to="/home" className={styles.logoLink}>
           <div className={styles.fullLogo}>
             <img src="/goldCougar.svg" alt="Logo" className={styles.logoIcon} />
             <img src="/cougarCSText.svg" alt="CougarCS" className={styles.logoText} />
