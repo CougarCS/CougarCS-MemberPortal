@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { AuthLayout, authStyles } from '../../components/AuthLayout';
+import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
 import { supabase } from '../../lib/supabase';
 
 type SignupFormValues = {
@@ -30,7 +30,6 @@ export const SignupPage = () => {
       return;
     }
 
-    // Check for active membership before creating an account
     const { data: eligible, error: checkError } = await supabase.rpc(
       'check_membership_eligibility',
       { p_email: data.email },
@@ -87,7 +86,7 @@ export const SignupPage = () => {
             type="password"
             {...register('password')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             required
             autoComplete="new-password"
           />
@@ -102,7 +101,7 @@ export const SignupPage = () => {
             type="password"
             {...register('confirmPassword')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Confirm your password"
             required
             autoComplete="new-password"
           />

@@ -1,38 +1,34 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import styles from './page.module.css';
-import { ProfileNav, NAV_SECTIONS } from '../../components/profile/ProfileNav';
-import type { SectionId } from '../../components/profile/ProfileNav';
+import { PageLayout } from '../../components/PageLayout/PageLayout';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
+import { ProfileNav } from '../../components/profile/ProfileNav/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
-import { BasicInfoSection } from '../../components/profile/BasicInfoSection';
-import { EducationSection } from '../../components/profile/EducationSection';
-import { ExperienceSection } from '../../components/profile/ExperienceSection';
-import { SkillsSection } from '../../components/profile/SkillsSection';
-import { ResumeSection } from '../../components/profile/ResumeSection';
-import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection';
-import { LocationSection } from '../../components/profile/LocationSection';
-import { IdentitiesSection } from '../../components/profile/IdentitiesSection';
-import type { SaveState, ProfileFormValues } from '../../components/profile/types';
+import { BasicInfoSection } from '../../components/profile/BasicInfoSection/BasicInfoSection';
+import { EducationSection } from '../../components/profile/EducationSection/EducationSection';
+import { ExperienceSection } from '../../components/profile/ExperienceSection/ExperienceSection';
+import { ResumeSection } from '../../components/profile/ResumeSection/ResumeSection';
+import { WorkPrefsSection } from '../../components/profile/WorkPrefsSection/WorkPrefsSection';
+import type { SaveState, ProfileFormValues } from '../../utils/types';
 import { loadProfile } from '../../lib/profile';
 import {
   saveBasicInfo,
   saveEducation,
   saveResumeLinks,
-  uploadHeadshot,
-  uploadResumeFile,
   saveWorkPrefs,
   saveLocation,
   saveIdentities,
   saveSkills,
 } from '../../lib/save';
+import { LocationSection } from '../../components/profile/LocationSection/LocationSection';
+import { IdentitiesSection } from '../../components/profile/IdentitiesSection/IdentitiesSection';
+import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
 
 export const ProfilePage = () => {
-  const [activeSection, setActiveSection] = useState<SectionId>('basic-information');
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(false);
-  const [headshotUrl, setHeadshotUrl] = useState('');
-  const [uploadingHeadshot, setUploadingHeadshot] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
 
   const [saveStates, setSaveStates] = useState<Record<string, SaveState>>({
     'basic-information': 'idle',
@@ -46,6 +42,10 @@ export const ProfilePage = () => {
 
   const setSaveState = useCallback((section: string, state: SaveState) => {
     setSaveStates((prev) => {
+      if (prev[section] === state) {
+        return prev;
+      }
+
       return { ...prev, [section]: state };
     });
   }, []);
@@ -66,8 +66,19 @@ export const ProfilePage = () => {
   );
 
   const form = useForm<ProfileFormValues>({ defaultValues: DEFAULT_VALUES });
-  const { watch, getValues, setValue, reset } = form;
+  const { subscribe, getValues, setValue, reset } = form;
   const initializedRef = useRef(false);
+  const suppressSaveTrackingRef = useRef(false);
+
+  const runWithoutSaveTracking = useCallback((fn: () => void) => {
+    suppressSaveTrackingRef.current = true;
+
+    try {
+      fn();
+    } finally {
+      suppressSaveTrackingRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -79,7 +90,6 @@ export const ProfilePage = () => {
         return;
       }
 
-      setHeadshotUrl(data.headshotUrl);
       reset(data);
       initializedRef.current = true;
       setProfileLoading(false);
@@ -89,74 +99,33 @@ export const ProfilePage = () => {
   }, [reset]);
 
   useEffect(() => {
-    const sub = watch((_, { name }) => {
-      if (!initializedRef.current) {
-        return;
-      }
-      const section = name && FIELD_TO_SECTION[name.split('.')[0]];
-      if (section) {
-        setSaveState(section, 'unsaved');
-      }
+    const unsubscribe = subscribe({
+      formState: { values: true },
+      callback: ({ name }) => {
+        if (!initializedRef.current || !name || suppressSaveTrackingRef.current) {
+          return;
+        }
+
+        const section = FIELD_TO_SECTION[name.split('.')[0]];
+        if (section) {
+          setSaveState(section, 'unsaved');
+        }
+      },
     });
 
-    return () => {
-      sub.unsubscribe();
-    };
-  }, [watch, setSaveState]);
-
-  useEffect(() => {
-    // this was causing the sidebar bug dont remove
-    if (profileLoading) return;
-
-    const updateActive = () => {
-      const scrollY = window.scrollY;
-      const windowH = window.innerHeight;
-      const docH = document.documentElement.scrollHeight;
-
-      if (scrollY + windowH >= docH - 50) {
-        setActiveSection(NAV_SECTIONS[NAV_SECTIONS.length - 1].id);
-        return;
-      }
-
-      const threshold = scrollY + windowH * 0.25;
-      let current: SectionId = NAV_SECTIONS[0].id;
-
-      for (const { id } of NAV_SECTIONS) {
-        const el = document.getElementById(id);
-        if (el && el.offsetTop <= threshold) {
-          current = id;
-        }
-      }
-      setActiveSection(current);
-    };
-
-    updateActive();
-    window.addEventListener('scroll', updateActive, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', updateActive);
-    };
-  }, [profileLoading]);
+    return unsubscribe;
+  }, [subscribe, setSaveState]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleHeadshotFile = async (file: File) => {
-    setUploadingHeadshot(true);
-    const url = await uploadHeadshot(file);
-    if (url) {
-      setHeadshotUrl(url);
-    }
-    setUploadingHeadshot(false);
+  const handleHeadshotFile = (file: File) => {
+    setValue('headshotFile', file);
   };
 
-  const handleResumeFile = async (file: File) => {
-    setUploadingResume(true);
-    const url = await uploadResumeFile(file);
-    if (url) {
-      setValue('resumeUrl', url);
-    }
-    setUploadingResume(false);
+  const handleResumeFile = (file: File) => {
+    setValue('resumeFile', file);
   };
 
   const handleResumeDownload = () => {
@@ -167,9 +136,23 @@ export const ProfilePage = () => {
   };
 
   const handleSaveBasicInfo = () => {
-    return doSave('basic-information', () => {
-      const { firstName, lastName, aboutMe } = getValues();
-      return saveBasicInfo({ firstName, lastName, aboutMe });
+    return doSave('basic-information', async () => {
+      const { firstName, lastName, aboutMe, headshotFile } = getValues();
+      const result = await saveBasicInfo({ firstName, lastName, aboutMe, headshotFile });
+
+      if (!result) {
+        return false;
+      }
+
+      runWithoutSaveTracking(() => {
+        if (result.headshotUrl) {
+          setValue('headshotUrl', result.headshotUrl);
+        }
+
+        setValue('headshotFile', null);
+      });
+
+      return true;
     });
   };
 
@@ -181,13 +164,28 @@ export const ProfilePage = () => {
   };
 
   const handleSaveResumeLinks = () => {
-    return doSave('resume', () => {
-      const { linkedinHandle, githubHandle, portfolioUrl } = getValues();
-      return saveResumeLinks({
+    return doSave('resume', async () => {
+      const { linkedinHandle, githubHandle, portfolioUrl, resumeFile } = getValues();
+      const result = await saveResumeLinks({
         linkedinUrl: linkedinHandle,
         githubUrl: githubHandle,
         portfolioUrl,
+        resumeFile,
       });
+
+      if (!result) {
+        return false;
+      }
+
+      runWithoutSaveTracking(() => {
+        if (result.resumeUrl) {
+          setValue('resumeUrl', result.resumeUrl);
+        }
+
+        setValue('resumeFile', null);
+      });
+
+      return true;
     });
   };
 
@@ -224,11 +222,10 @@ export const ProfilePage = () => {
     <p style={{ padding: '2rem' }}>Loading...</p>
   ) : (
     <div className={styles.body}>
-      <ProfileNav activeSection={activeSection} onNavigate={scrollToSection} />
+      <ProfileNav onNavigate={scrollToSection} />
       <main className={styles.content}>
         <BasicInfoSection
-          headshotUrl={headshotUrl}
-          uploadingHeadshot={uploadingHeadshot}
+          isSaving={saveStates['basic-information'] === 'saving'}
           saveState={saveStates['basic-information']}
           onHeadshotFile={handleHeadshotFile}
           onSave={handleSaveBasicInfo}
@@ -237,7 +234,7 @@ export const ProfilePage = () => {
         <ExperienceSection />
         <SkillsSection saveState={saveStates['skills']} onSave={handleSaveSkills} />
         <ResumeSection
-          uploadingResume={uploadingResume}
+          isSaving={saveStates['resume'] === 'saving'}
           saveState={saveStates['resume']}
           onResumeFile={handleResumeFile}
           onResumeDownload={handleResumeDownload}
@@ -255,13 +252,13 @@ export const ProfilePage = () => {
 
   return (
     <FormProvider {...form}>
-      <div className={styles.page}>
-        <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Your Profile</h1>
-          <p className={styles.pageSubtitle}>Manage your CougarCS profile</p>
-        </header>
+      <PageLayout>
+        <PageHeader
+          title="Your Profile"
+          subtitle={<p className={styles.pageSubtitle}>Manage your CougarCS profile</p>}
+        />
         {mainComponent}
-      </div>
+      </PageLayout>
     </FormProvider>
   );
 };

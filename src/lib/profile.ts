@@ -1,7 +1,7 @@
 import { apiGet } from './api';
 import { MONTHS } from '../utils/constants';
 import { OPPORTUNITY_TYPE_DB_TO_DISPLAY, WORK_ENV_DB_TO_DISPLAY } from '../utils/profileMappings';
-import type { Skill, Experience, ProfileFormValues } from '../components/profile/types';
+import type { Skill, Experience, ProfileFormValues } from '../utils/types';
 
 const monthIntToName = (m: number | null | undefined): string => {
   return m != null ? (MONTHS[m - 1] ?? '') : '';
@@ -48,11 +48,7 @@ interface ApiProfile {
   experiences: ApiExperience[];
 }
 
-export interface ProfileData extends ProfileFormValues {
-  headshotUrl: string;
-}
-
-export const loadProfile = async (): Promise<ProfileData | null> => {
+export const loadProfile = async (): Promise<ProfileFormValues | null> => {
   const raw = await apiGet<ApiProfile>('/api/profile');
   if (!raw) {
     return null;
@@ -64,6 +60,7 @@ export const loadProfile = async (): Promise<ProfileData | null> => {
     email: raw.email ?? '',
     aboutMe: raw.aboutMe ?? '',
     headshotUrl: raw.headshotUrl ?? '',
+    headshotFile: null,
     major: raw.major ?? '',
     graduationYear: raw.graduationYear?.toString() ?? '',
     graduationMonth: monthIntToName(raw.graduationMonth),
@@ -73,6 +70,7 @@ export const loadProfile = async (): Promise<ProfileData | null> => {
     githubHandle: raw.githubUrl ?? '',
     portfolioUrl: raw.portfolioUrl ?? '',
     resumeUrl: raw.resumeUrl ?? '',
+    resumeFile: null,
     city: raw.city ?? '',
     state: raw.state ?? '',
     zip: raw.zip ?? '',

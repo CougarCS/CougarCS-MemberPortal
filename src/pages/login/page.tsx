@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { AuthLayout, authStyles } from '../../components/AuthLayout';
-import type { AuthMode } from '../../components/AuthLayout';
+import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
+import type { AuthMode } from '../../components/AuthLayout/AuthLayout';
 import { supabase } from '../../lib/supabase';
 import styles from './page.module.css';
 
@@ -100,7 +100,7 @@ export const LoginPage = () => {
             type="password"
             {...register('password')}
             className={authStyles.input}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             required
             autoComplete="current-password"
           />

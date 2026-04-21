@@ -5,8 +5,8 @@ import { CheckEmailPage } from './pages/check-email/page';
 import { ProfilePage } from './pages/profile/page';
 import { HomePage } from './pages/home/page';
 import { Navbar } from './components/Navbar/Navbar';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { PublicOnlyRoute } from './components/PublicOnlyRoute';
+import { ProtectedRoute } from './components/ProtectedRoute/ProtectedRoute';
+import { PublicOnlyRoute } from './components/PublicOnlyRoute/PublicOnlyRoute';
 
 const AUTH_ROUTES = ['/login', '/signup', '/check-email'];
 

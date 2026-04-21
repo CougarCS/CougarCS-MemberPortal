@@ -1,0 +1,13 @@
+.inlineRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.inlineLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-h);
+  flex: 1;
+}

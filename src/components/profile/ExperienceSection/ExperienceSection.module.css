@@ -1,0 +1,21 @@
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.listHeaderLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.emptyState {
+  font-size: 0.875rem;
+  color: var(--neutral-grey);
+  text-align: center;
+  padding: 2.5rem 0;
+  margin: 0;
+}

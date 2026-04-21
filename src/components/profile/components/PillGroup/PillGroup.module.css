@@ -1,0 +1,33 @@
+.pillGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.pill {
+  padding: 0.35rem 0.875rem;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+
+.pill:hover {
+  border-color: var(--cougar-red);
+  color: var(--cougar-red);
+}
+
+.pillActive {
+  border-color: var(--cougar-red);
+  color: var(--cougar-red);
+  background: var(--cougar-red-light);
+  font-weight: 600;
+}

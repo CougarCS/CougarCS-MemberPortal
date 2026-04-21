@@ -1,0 +1,11 @@
+.threeCol {
+  display: grid;
+  grid-template-columns: 1fr 80px 120px;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .threeCol {
+    grid-template-columns: 1fr;
+  }
+}
