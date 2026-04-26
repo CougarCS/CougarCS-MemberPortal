@@ -12,6 +12,12 @@ import type { ValidationResult } from '../utils/formValidation';
 type ProfileField = keyof ProfileFormValues;
 type ExperienceField = keyof Omit<Experience, 'id'>;
 
+const ONE_MB = 1024 * 1024;
+const HEADSHOT_MAX_BYTES = 2 * ONE_MB;
+const RESUME_MAX_BYTES = ONE_MB;
+const HEADSHOT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const RESUME_TYPES = new Set(['application/pdf']);
+
 const monthSchema = z
   .number()
   .int()
@@ -21,8 +27,18 @@ const uuidSchema = z.string().uuid('Invalid skill selected.');
 const uniqueUuidArraySchema = z
   .array(uuidSchema)
   .refine((ids) => new Set(ids).size === ids.length, 'Remove duplicate skills.');
-const nullableStringSchema = z.string().nullable();
 const optionalNullableStringSchema = z.string().nullable().optional();
+const requiredTrimmedStringSchema = (field: string, max: number) =>
+  z
+    .string()
+    .trim()
+    .min(1, `${field} is required.`)
+    .max(max, `${field} must be ${max} characters or less.`);
+const optionalNullableStringMaxSchema = (field: string, max: number) =>
+  optionalNullableStringSchema.refine(
+    (value) => value == null || value.length <= max,
+    `${field} must be ${max} characters or less.`,
+  );
 const fourDigitYearSchema = z
   .number()
   .int('Year must be a whole number.')
@@ -39,15 +55,15 @@ const workEnvironmentSchema = z.string().refine((value) => value in WORK_ENV_DB_
 
 export const experienceSchema = z
   .object({
-    title: nullableStringSchema,
-    company: nullableStringSchema,
+    title: requiredTrimmedStringSchema('Job title', 100),
+    company: requiredTrimmedStringSchema('Company', 100),
     startMonth: monthSchema.nullable().optional(),
     startYear: fourDigitYearSchema.nullable().optional(),
     endMonth: monthSchema.nullable().optional(),
     endYear: fourDigitYearSchema.nullable().optional(),
     current: z.boolean().optional(),
-    location: nullableStringSchema.optional(),
-    description: nullableStringSchema.optional(),
+    location: optionalNullableStringMaxSchema('Location', 150),
+    description: optionalNullableStringMaxSchema('Description', 1000),
     skillIds: uniqueUuidArraySchema.optional(),
   })
   .strict();
@@ -77,15 +93,26 @@ export const saveProfileBodySchema = z
 
 export const basicInfoBodySchema = z
   .object({
-    firstName: z.string().max(100, 'First name must be 100 characters or less.'),
-    lastName: z.string().max(100, 'Last name must be 100 characters or less.'),
+    firstName: requiredTrimmedStringSchema('First name', 100),
+    lastName: requiredTrimmedStringSchema('Last name', 100),
     aboutMe: z.string().max(1000, 'About me must be 1000 characters or less.'),
+    headshotFile: z
+      .instanceof(File)
+      .nullable()
+      .refine(
+        (file) => !file || HEADSHOT_TYPES.has(file.type),
+        'Headshot must be a JPG, PNG, or WebP image.',
+      )
+      .refine(
+        (file) => !file || file.size <= HEADSHOT_MAX_BYTES,
+        'Headshot must be 2 MB or smaller.',
+      ),
   })
   .strict();
 
 export const educationBodySchema = z
   .object({
-    major: optionalNullableStringSchema,
+    major: optionalNullableStringMaxSchema('Major', 100),
     gradYear: fourDigitYearSchema.nullable(),
     gradMonth: monthSchema.nullable(),
     gpa: z
@@ -98,14 +125,34 @@ export const educationBodySchema = z
 
 export const resumeBodySchema = z
   .object({
-    linkedInUrl: z.string(),
-    githubUrl: z.string(),
+    linkedInUrl: z
+      .string()
+      .refine(
+        (value) => !value.trim() || /^[A-Za-z0-9-]{3,100}$/.test(value.trim()),
+        'LinkedIn must be a handle, not a full URL.',
+      ),
+    githubUrl: z.string().refine((value) => {
+      const handle = value.trim();
+
+      return (
+        !handle ||
+        (/^[A-Za-z0-9-]{1,39}$/.test(handle) &&
+          !handle.startsWith('-') &&
+          !handle.endsWith('-') &&
+          !handle.includes('--'))
+      );
+    }, 'GitHub must be a valid username, not a full URL.'),
     portfolioUrl: z
       .string()
       .refine(
         (value) => !value.trim() || value.trim().startsWith('https://'),
         'Portfolio URL must start with https://.',
       ),
+    resumeFile: z
+      .instanceof(File)
+      .nullable()
+      .refine((file) => !file || RESUME_TYPES.has(file.type), 'Resume must be a PDF.')
+      .refine((file) => !file || file.size <= RESUME_MAX_BYTES, 'Resume must be 1 MB or smaller.'),
   })
   .strict();
 
@@ -119,7 +166,7 @@ export const workPreferencesBodySchema = z
 
 export const locationBodySchema = z
   .object({
-    city: optionalNullableStringSchema,
+    city: optionalNullableStringMaxSchema('City', 100),
     state: optionalNullableStringSchema.refine(
       (value) => value == null || /^[A-Za-z]{2}$/.test(value),
       'State must be two letters.',
@@ -134,7 +181,7 @@ export const locationBodySchema = z
 
 export const identitiesBodySchema = z
   .object({
-    gender: optionalNullableStringSchema,
+    gender: optionalNullableStringMaxSchema('Gender', 100),
     ethnicities: z.array(z.string()),
   })
   .strict();
@@ -223,12 +270,13 @@ const isValidFourDigitYear = (year: number | null): year is number => {
 };
 
 export const validateBasicInfo = (
-  values: Pick<ProfileFormValues, 'firstName' | 'lastName' | 'aboutMe'>,
+  values: Pick<ProfileFormValues, 'firstName' | 'lastName' | 'aboutMe' | 'headshotFile'>,
 ): ValidationResult<ProfileField> => {
   return resultFromZod(basicInfoBodySchema.safeParse(values), {
     firstName: 'firstName',
     lastName: 'lastName',
     aboutMe: 'aboutMe',
+    headshotFile: 'headshotFile',
   });
 };
 
@@ -257,18 +305,23 @@ export const validateEducation = (
 };
 
 export const validateResume = (
-  values: Pick<ProfileFormValues, 'linkedinHandle' | 'githubHandle' | 'portfolioUrl'>,
+  values: Pick<
+    ProfileFormValues,
+    'linkedinHandle' | 'githubHandle' | 'portfolioUrl' | 'resumeFile'
+  >,
 ): ValidationResult<ProfileField> => {
   return resultFromZod(
     resumeBodySchema.safeParse({
       linkedInUrl: values.linkedinHandle,
       githubUrl: values.githubHandle,
       portfolioUrl: values.portfolioUrl,
+      resumeFile: values.resumeFile,
     }),
     {
       linkedInUrl: 'linkedinHandle',
       githubUrl: 'githubHandle',
       portfolioUrl: 'portfolioUrl',
+      resumeFile: 'resumeFile',
     },
   );
 };
@@ -347,8 +400,8 @@ export const validateExperienceDraft = (
 
   const validation = resultFromZod(
     experienceSchema.safeParse({
-      title: emptyToNull(values.title),
-      company: emptyToNull(values.company),
+      title: values.title,
+      company: values.company,
       startMonth,
       startYear,
       endMonth,
@@ -378,11 +431,11 @@ export const validateExperienceDraft = (
       { field: 'endYear', raw: values.endYear, label: 'End year' },
     ]);
 
-  if ((startMonth != null || startYear != null) && startMonth == null) {
+  if (startMonth == null) {
     addError(validationWithNumberErrors, 'startMonth', 'Select a start month.');
   }
 
-  if ((startMonth != null || startYear != null) && startYear == null) {
+  if (startYear == null) {
     addError(validationWithNumberErrors, 'startYear', 'Enter a start year.');
   }
 

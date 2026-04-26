@@ -84,10 +84,14 @@ export const ExperienceForm = ({ initial = BLANK, opState, onSave, onCancel }: P
     <div className={styles.expForm}>
       <FieldRow>
         <FieldGroup label="Job Title" error={errors.title?.message}>
-          <FormInput {...register('title')} aria-invalid={Boolean(errors.title)} />
+          <FormInput {...register('title')} aria-invalid={Boolean(errors.title)} maxLength={100} />
         </FieldGroup>
         <FieldGroup label="Company" error={errors.company?.message}>
-          <FormInput {...register('company')} aria-invalid={Boolean(errors.company)} />
+          <FormInput
+            {...register('company')}
+            aria-invalid={Boolean(errors.company)}
+            maxLength={100}
+          />
         </FieldGroup>
       </FieldRow>
 
@@ -145,6 +149,7 @@ export const ExperienceForm = ({ initial = BLANK, opState, onSave, onCancel }: P
           placeholder="City, State, Country"
           {...register('location')}
           aria-invalid={Boolean(errors.location)}
+          maxLength={150}
         />
       </FieldGroup>
 
@@ -152,6 +157,7 @@ export const ExperienceForm = ({ initial = BLANK, opState, onSave, onCancel }: P
         <textarea
           className={styles.textarea}
           rows={4}
+          maxLength={1000}
           {...register('description')}
           aria-invalid={Boolean(errors.description)}
         />

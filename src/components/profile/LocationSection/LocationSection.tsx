@@ -34,6 +34,7 @@ export const LocationSection = ({ saveState, onSave }: Props) => {
             {...register('city')}
             aria-invalid={Boolean(errors.city)}
             placeholder="Houston"
+            maxLength={100}
           />
         </FieldGroup>
 

@@ -16,7 +16,12 @@ type ProfileSectionValidation = {
   validation: ValidationResult<FieldPath<ProfileFormValues>>;
 };
 
-const BASIC_INFO_FIELDS: FieldPath<ProfileFormValues>[] = ['firstName', 'lastName', 'aboutMe'];
+const BASIC_INFO_FIELDS: FieldPath<ProfileFormValues>[] = [
+  'firstName',
+  'lastName',
+  'aboutMe',
+  'headshotFile',
+];
 const EDUCATION_FIELDS: FieldPath<ProfileFormValues>[] = [
   'major',
   'graduationYear',
@@ -27,6 +32,7 @@ const RESUME_FIELDS: FieldPath<ProfileFormValues>[] = [
   'linkedinHandle',
   'githubHandle',
   'portfolioUrl',
+  'resumeFile',
 ];
 const WORK_PREF_FIELDS: FieldPath<ProfileFormValues>[] = [
   'opportunities',
@@ -48,11 +54,11 @@ export const getProfileSectionValidation = (
 ): ProfileSectionValidation | null => {
   switch (section) {
     case 'basic-information': {
-      const { firstName, lastName, aboutMe } = values;
+      const { firstName, lastName, aboutMe, headshotFile } = values;
 
       return {
         fields: BASIC_INFO_FIELDS,
-        validation: validateBasicInfo({ firstName, lastName, aboutMe }),
+        validation: validateBasicInfo({ firstName, lastName, aboutMe, headshotFile }),
       };
     }
     case 'education': {
@@ -64,11 +70,11 @@ export const getProfileSectionValidation = (
       };
     }
     case 'resume': {
-      const { linkedinHandle, githubHandle, portfolioUrl } = values;
+      const { linkedinHandle, githubHandle, portfolioUrl, resumeFile } = values;
 
       return {
         fields: RESUME_FIELDS,
-        validation: validateResume({ linkedinHandle, githubHandle, portfolioUrl }),
+        validation: validateResume({ linkedinHandle, githubHandle, portfolioUrl, resumeFile }),
       };
     }
     case 'skills':

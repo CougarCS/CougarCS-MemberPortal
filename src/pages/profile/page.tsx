@@ -146,11 +146,11 @@ export const ProfilePage = () => {
   };
 
   const handleHeadshotFile = (file: File) => {
-    setValue('headshotFile', file);
+    setValue('headshotFile', file, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleResumeFile = (file: File) => {
-    setValue('resumeFile', file);
+    setValue('resumeFile', file, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleResumeDownload = () => {
@@ -262,7 +262,15 @@ export const ProfilePage = () => {
 
     return doSave('location', () => {
       const { city, state, zip, authorizedToWork } = getValues();
-      return saveLocation({ city, state, zip, authorizedToWork });
+      return saveLocation({ city, state, zip, authorizedToWork }).then((ok) => {
+        if (ok) {
+          runWithoutSaveTracking(() => {
+            setValue('state', state.toUpperCase());
+          });
+        }
+
+        return ok;
+      });
     });
   };
 

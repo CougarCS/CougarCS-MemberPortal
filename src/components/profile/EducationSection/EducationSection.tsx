@@ -30,6 +30,7 @@ export const EducationSection = ({ saveState, onSave }: Props) => {
           {...register('major')}
           aria-invalid={Boolean(errors.major)}
           placeholder="e.g. Computer Science"
+          maxLength={100}
         />
       </FieldGroup>
 

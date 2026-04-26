@@ -63,6 +63,9 @@ export const ResumeSection = ({
             <p className={styles.uploadHint}>PDF only; up to 1 MB</p>
           </>
         )}
+        {errors.resumeFile?.message && (
+          <p className={styles.uploadError}>{errors.resumeFile.message}</p>
+        )}
         <OutlineButton
           type="button"
           disabled={isSaving}
@@ -73,7 +76,7 @@ export const ResumeSection = ({
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept="application/pdf,.pdf"
           className={styles.hiddenInput}
           onChange={(e) => {
             const file = e.target.files?.[0];
@@ -93,6 +96,7 @@ export const ResumeSection = ({
             {...register('linkedinHandle')}
             aria-invalid={Boolean(errors.linkedinHandle)}
             placeholder="your-handle"
+            maxLength={100}
           />
         </div>
       </FieldGroup>
@@ -112,6 +116,7 @@ export const ResumeSection = ({
             {...register('githubHandle')}
             aria-invalid={Boolean(errors.githubHandle)}
             placeholder="your-username"
+            maxLength={39}
           />
         </div>
       </FieldGroup>

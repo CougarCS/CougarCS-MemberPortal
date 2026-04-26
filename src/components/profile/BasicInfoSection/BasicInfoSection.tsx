@@ -75,6 +75,9 @@ export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }
             <br />
             (max file size 2 MB)
           </p>
+          {errors.headshotFile?.message && (
+            <p className={styles.fileError}>{errors.headshotFile.message}</p>
+          )}
           <OutlineButton
             type="button"
             disabled={isSaving}
