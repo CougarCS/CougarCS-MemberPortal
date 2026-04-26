@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
 import styles from './page.module.css';
 import { PageLayout } from '../../components/PageLayout/PageLayout';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
@@ -25,6 +26,8 @@ import {
 import { LocationSection } from '../../components/profile/LocationSection/LocationSection';
 import { IdentitiesSection } from '../../components/profile/IdentitiesSection/IdentitiesSection';
 import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
+import { applyValidationResult } from '../../utils/formValidation';
+import { getProfileSectionValidation } from '../../utils/profileSectionValidation';
 
 const formatGpa = (gpa: string) => {
   const value = Number(gpa);
@@ -72,7 +75,7 @@ export const ProfilePage = () => {
   );
 
   const form = useForm<ProfileFormValues>({ defaultValues: DEFAULT_VALUES });
-  const { subscribe, getValues, setValue, reset } = form;
+  const { subscribe, getValues, setValue, reset, setError, clearErrors } = form;
   const initializedRef = useRef(false);
   const suppressSaveTrackingRef = useRef(false);
 
@@ -85,6 +88,19 @@ export const ProfilePage = () => {
       suppressSaveTrackingRef.current = false;
     }
   }, []);
+
+  const validateCurrentSection = useCallback(
+    (section: string) => {
+      const sectionValidation = getProfileSectionValidation(section, getValues());
+
+      if (!sectionValidation) {
+        return true;
+      }
+
+      return applyValidationResult({ ...sectionValidation, clearErrors, setError });
+    },
+    [clearErrors, getValues, setError],
+  );
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -112,15 +128,18 @@ export const ProfilePage = () => {
           return;
         }
 
+        clearErrors(name as FieldPath<ProfileFormValues>);
+
         const section = FIELD_TO_SECTION[name.split('.')[0]];
         if (section) {
           setSaveState(section, 'unsaved');
+          validateCurrentSection(section);
         }
       },
     });
 
     return unsubscribe;
-  }, [subscribe, setSaveState]);
+  }, [clearErrors, subscribe, setSaveState, validateCurrentSection]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -142,6 +161,10 @@ export const ProfilePage = () => {
   };
 
   const handleSaveBasicInfo = () => {
+    if (!validateCurrentSection('basic-information')) {
+      return;
+    }
+
     return doSave('basic-information', async () => {
       const { firstName, lastName, aboutMe, headshotFile } = getValues();
       const result = await saveBasicInfo({ firstName, lastName, aboutMe, headshotFile });
@@ -163,6 +186,10 @@ export const ProfilePage = () => {
   };
 
   const handleSaveEducation = () => {
+    if (!validateCurrentSection('education')) {
+      return;
+    }
+
     return doSave('education', async () => {
       const { major, graduationYear, graduationMonth, gpa } = getValues();
       const ok = await saveEducation({ major, graduationYear, graduationMonth, gpa });
@@ -178,6 +205,10 @@ export const ProfilePage = () => {
   };
 
   const handleSaveResumeLinks = () => {
+    if (!validateCurrentSection('resume')) {
+      return;
+    }
+
     return doSave('resume', async () => {
       const { linkedinHandle, githubHandle, portfolioUrl, resumeFile } = getValues();
       const result = await saveResumeLinks({
@@ -204,12 +235,20 @@ export const ProfilePage = () => {
   };
 
   const handleSaveSkills = () => {
+    if (!validateCurrentSection('skills')) {
+      return;
+    }
+
     return doSave('skills', () => {
       return saveSkills(getValues('skills'));
     });
   };
 
   const handleSaveWorkPrefs = () => {
+    if (!validateCurrentSection('work-preferences')) {
+      return;
+    }
+
     return doSave('work-preferences', () => {
       const { opportunities, openToRelocate, workEnvironments } = getValues();
       return saveWorkPrefs({ opportunities, openToRelocate, workEnvironments });
@@ -217,6 +256,10 @@ export const ProfilePage = () => {
   };
 
   const handleSaveLocation = () => {
+    if (!validateCurrentSection('location')) {
+      return;
+    }
+
     return doSave('location', () => {
       const { city, state, zip, authorizedToWork } = getValues();
       return saveLocation({ city, state, zip, authorizedToWork });
@@ -224,6 +267,10 @@ export const ProfilePage = () => {
   };
 
   const handleSaveIdentities = () => {
+    if (!validateCurrentSection('personal-identities')) {
+      return;
+    }
+
     return doSave('personal-identities', () => {
       const { gender, ethnicities } = getValues();
       return saveIdentities({ gender, ethnicities });

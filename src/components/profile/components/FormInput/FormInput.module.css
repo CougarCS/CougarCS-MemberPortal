@@ -37,6 +37,10 @@ select.input {
   box-shadow: 0 0 0 3px var(--cougar-red-light);
 }
 
+.input[aria-invalid='true'] {
+  border-color: var(--cougar-red);
+}
+
 .input:disabled {
   background: var(--light-grey);
   color: var(--neutral-grey);

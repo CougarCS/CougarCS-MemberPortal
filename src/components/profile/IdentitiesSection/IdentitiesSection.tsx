@@ -11,7 +11,10 @@ interface Props {
 }
 
 export const IdentitiesSection = ({ saveState, onSave }: Props) => {
-  const { control } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const { field: genderField } = useController({ name: 'gender', control });
   const { field: ethnicitiesField } = useController({ name: 'ethnicities', control });
 
@@ -31,7 +34,7 @@ export const IdentitiesSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <FieldGroup label="What is your gender?">
+      <FieldGroup label="What is your gender?" error={errors.gender?.message}>
         <PillGroup>
           {['Male', 'Female', 'Non-Binary'].map((g) => (
             <Pill
@@ -46,7 +49,10 @@ export const IdentitiesSection = ({ saveState, onSave }: Props) => {
         </PillGroup>
       </FieldGroup>
 
-      <FieldGroup label="What is your racial/ethnic identity? (Select all that apply)">
+      <FieldGroup
+        label="What is your racial/ethnic identity? (Select all that apply)"
+        error={errors.ethnicities?.message}
+      >
         <PillGroup>
           {ETHNICITIES.map((e) => (
             <Pill key={e} type="button" active={ethnicities.includes(e)} onClick={() => toggle(e)}>

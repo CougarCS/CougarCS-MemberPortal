@@ -24,7 +24,11 @@ export const ResumeSection = ({
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { control, register } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const resumePath = useWatch({ control, name: 'resumeUrl' });
   const resumeFile = useWatch({ control, name: 'resumeFile' });
   const hasResume = Boolean(resumeFile || resumePath);
@@ -81,12 +85,13 @@ export const ResumeSection = ({
         />
       </div>
 
-      <FieldGroup label="LinkedIn Profile">
+      <FieldGroup label="LinkedIn Profile" error={errors.linkedinHandle?.message}>
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>linkedin.com/in/</span>
           <input
             className={styles.inputAffix}
             {...register('linkedinHandle')}
+            aria-invalid={Boolean(errors.linkedinHandle)}
             placeholder="your-handle"
           />
         </div>
@@ -98,12 +103,14 @@ export const ResumeSection = ({
             GitHub <span className={styles.optionalTag}>Optional</span>
           </>
         }
+        error={errors.githubHandle?.message}
       >
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>github.com/</span>
           <input
             className={styles.inputAffix}
             {...register('githubHandle')}
+            aria-invalid={Boolean(errors.githubHandle)}
             placeholder="your-username"
           />
         </div>
@@ -115,10 +122,12 @@ export const ResumeSection = ({
             Portfolio <span className={styles.optionalTag}>Optional</span>
           </>
         }
+        error={errors.portfolioUrl?.message}
       >
         <FormInput
           type="url"
           {...register('portfolioUrl')}
+          aria-invalid={Boolean(errors.portfolioUrl)}
           placeholder="https://yourportfolio.com"
         />
       </FieldGroup>
