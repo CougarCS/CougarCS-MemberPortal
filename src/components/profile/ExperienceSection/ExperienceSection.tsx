@@ -6,10 +6,14 @@ import { SectionShell } from '../SectionShell/SectionShell';
 import { ExperienceForm } from './ExperienceForm/ExperienceForm';
 import { ExperienceCard } from './ExperienceCard/ExperienceCard';
 import { OutlineButton } from '../../OutlineButton/OutlineButton';
-import type { Experience, ProfileFormValues } from '../../../utils/types';
+import type { Experience, ProfileFormValues, Skill } from '../../../utils/types';
+
+const mergeSkillsById = (current: Skill[], incoming: Skill[]): Skill[] => {
+  return Array.from(new Map([...current, ...incoming].map((skill) => [skill.id, skill])).values());
+};
 
 export const ExperienceSection = () => {
-  const { control } = useFormContext<ProfileFormValues>();
+  const { control, getValues, setValue } = useFormContext<ProfileFormValues>();
   const { field } = useController({ name: 'experiences', control });
   const experiences: Experience[] = field.value ?? [];
 
@@ -26,7 +30,18 @@ export const ExperienceSection = () => {
   };
 
   const openEdit = (exp: Experience) => {
-    const { id: _id, ...rest } = exp;
+    const rest: Omit<Experience, 'id'> = {
+      title: exp.title,
+      company: exp.company,
+      startMonth: exp.startMonth,
+      startYear: exp.startYear,
+      endMonth: exp.endMonth,
+      endYear: exp.endYear,
+      current: exp.current,
+      location: exp.location,
+      description: exp.description,
+      skills: exp.skills,
+    };
     setFormInitial(rest);
     setEditingId(exp.id);
     setOpState('idle');
@@ -41,6 +56,24 @@ export const ExperienceSection = () => {
 
   const handleSave = async (draft: Omit<Experience, 'id'>) => {
     setOpState('saving');
+
+    const mergeDraftSkillsIntoProfile = () => {
+      if (draft.skills.length === 0) {
+        return;
+      }
+
+      const currentSkills = getValues('skills') ?? [];
+      const mergedSkills = mergeSkillsById(currentSkills, draft.skills);
+
+      if (mergedSkills.length !== currentSkills.length) {
+        setValue('skills', mergedSkills, {
+          shouldDirty: false,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      }
+    };
+
     if (editingId) {
       const ok = await updateExperience(editingId, draft);
       if (!ok) {
@@ -50,6 +83,7 @@ export const ExperienceSection = () => {
       field.onChange(
         experiences.map((e) => (e.id === editingId ? { ...draft, id: editingId } : e)),
       );
+      mergeDraftSkillsIntoProfile();
     } else {
       const created = await createExperience(draft);
       if (!created) {
@@ -57,6 +91,7 @@ export const ExperienceSection = () => {
         return;
       }
       field.onChange([...experiences, created]);
+      mergeDraftSkillsIntoProfile();
     }
     setShowForm(false);
     setEditingId(null);

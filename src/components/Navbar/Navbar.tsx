@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../../context/AuthContext';
-import { loadProfile } from '../../lib/profile';
+import { useAuth } from '../../context/useAuth';
+import { loadMe } from '../../lib/profile';
 import menuIcon from '../../assets/icon-menu.svg';
 import styles from './Navbar.module.css';
 import { UserDropdown } from './UserDropdown/UserDropdown';
@@ -21,9 +21,7 @@ export const Navbar = () => {
   const { user, signOut } = useAuth();
 
   useEffect(() => {
-    // this API call is huge. we should either use redux & load all profile data on any page mount
-    // or, we can just create another endpoint. im leaning towards redux but lets revisit once UI is finalized
-    loadProfile().then((data) => {
+    loadMe().then((data) => {
       if (!data) {
         return;
       }

@@ -4,7 +4,7 @@ import styles from './page.module.css';
 import { PageLayout } from '../../components/PageLayout/PageLayout';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { ProfileNav } from '../../components/profile/ProfileNav/ProfileNav';
-import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav/profileNavConfig';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
 import { BasicInfoSection } from '../../components/profile/BasicInfoSection/BasicInfoSection';
 import { EducationSection } from '../../components/profile/EducationSection/EducationSection';
@@ -85,7 +85,7 @@ export const ProfilePage = () => {
       const data = await loadProfile();
 
       if (!data) {
-        setProfileError(false);
+        setProfileError(true);
         setProfileLoading(false);
         return;
       }

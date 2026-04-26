@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import styles from './BasicInfoSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
@@ -28,23 +28,20 @@ export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }
   const { control, register } = useFormContext<ProfileFormValues>();
   const headshotUrl = useWatch({ control, name: 'headshotUrl' }) ?? '';
   const headshotFile = useWatch({ control, name: 'headshotFile' });
-  const [previewUrl, setPreviewUrl] = useState('');
+  const objectUrl = useMemo(() => {
+    return headshotFile ? URL.createObjectURL(headshotFile) : '';
+  }, [headshotFile]);
 
   useEffect(() => {
-    if (!headshotFile) {
-      setPreviewUrl(headshotUrl);
-      return;
-    }
-
-    const url = URL.createObjectURL(headshotFile);
-    setPreviewUrl(url);
-
     return () => {
-      URL.revokeObjectURL(url);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
     };
-  }, [headshotFile, headshotUrl]);
+  }, [objectUrl]);
 
   const hasHeadshot = Boolean(headshotFile || headshotUrl);
+  const previewUrl = objectUrl || headshotUrl;
 
   return (
     <SectionShell

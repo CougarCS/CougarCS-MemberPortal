@@ -32,5 +32,3 @@ export const AuthLayout = ({ mode = 'member', children }: Props) => (
     </div>
   </div>
 );
-
-export { styles as authStyles };
