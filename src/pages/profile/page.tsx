@@ -26,6 +26,12 @@ import { LocationSection } from '../../components/profile/LocationSection/Locati
 import { IdentitiesSection } from '../../components/profile/IdentitiesSection/IdentitiesSection';
 import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
 
+const formatGpa = (gpa: string) => {
+  const value = Number(gpa);
+
+  return gpa.trim() && Number.isFinite(value) ? value.toFixed(2) : '';
+};
+
 export const ProfilePage = () => {
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(false);
@@ -157,9 +163,17 @@ export const ProfilePage = () => {
   };
 
   const handleSaveEducation = () => {
-    return doSave('education', () => {
+    return doSave('education', async () => {
       const { major, graduationYear, graduationMonth, gpa } = getValues();
-      return saveEducation({ major, graduationYear, graduationMonth, gpa });
+      const ok = await saveEducation({ major, graduationYear, graduationMonth, gpa });
+
+      if (ok) {
+        runWithoutSaveTracking(() => {
+          setValue('gpa', formatGpa(gpa));
+        });
+      }
+
+      return ok;
     });
   };
 

@@ -34,7 +34,7 @@ export const SectionShell = ({ id, title, desc, children, saveState = 'idle', on
               {SAVE_STATUS_TEXT[saveState]}
             </span>
           )}
-          <PrimaryButton type="button" onClick={onSave} disabled={saveState === 'saving'}>
+          <PrimaryButton type="button" onClick={onSave} disabled={saveState !== 'unsaved'}>
             {saveState === 'saving' ? 'Saving...' : 'Save'}
           </PrimaryButton>
         </div>

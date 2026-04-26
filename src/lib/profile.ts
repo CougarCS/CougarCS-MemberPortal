@@ -71,7 +71,7 @@ export const loadProfile = async (): Promise<ProfileFormValues | null> => {
     major: raw.major ?? '',
     graduationYear: raw.graduationYear?.toString() ?? '',
     graduationMonth: monthIntToName(raw.graduationMonth),
-    gpa: raw.gpa?.toString() ?? '',
+    gpa: raw.gpa == null ? '' : raw.gpa.toFixed(2),
     skills: allSkills,
     linkedinHandle: raw.linkedinUrl ?? '',
     githubHandle: raw.githubUrl ?? '',
