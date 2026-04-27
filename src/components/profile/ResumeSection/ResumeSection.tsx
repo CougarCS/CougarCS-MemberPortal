@@ -24,7 +24,11 @@ export const ResumeSection = ({
   onSave,
 }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { control, register } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const resumePath = useWatch({ control, name: 'resumeUrl' });
   const resumeFile = useWatch({ control, name: 'resumeFile' });
   const hasResume = Boolean(resumeFile || resumePath);
@@ -59,6 +63,9 @@ export const ResumeSection = ({
             <p className={styles.uploadHint}>PDF only; up to 1 MB</p>
           </>
         )}
+        {errors.resumeFile?.message && (
+          <p className={styles.uploadError}>{errors.resumeFile.message}</p>
+        )}
         <OutlineButton
           type="button"
           disabled={isSaving}
@@ -69,7 +76,7 @@ export const ResumeSection = ({
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept="application/pdf,.pdf"
           className={styles.hiddenInput}
           onChange={(e) => {
             const file = e.target.files?.[0];
@@ -81,13 +88,15 @@ export const ResumeSection = ({
         />
       </div>
 
-      <FieldGroup label="LinkedIn Profile">
+      <FieldGroup label="LinkedIn Profile" error={errors.linkedinHandle?.message}>
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>linkedin.com/in/</span>
           <input
             className={styles.inputAffix}
             {...register('linkedinHandle')}
+            aria-invalid={Boolean(errors.linkedinHandle)}
             placeholder="your-handle"
+            maxLength={100}
           />
         </div>
       </FieldGroup>
@@ -98,13 +107,16 @@ export const ResumeSection = ({
             GitHub <span className={styles.optionalTag}>Optional</span>
           </>
         }
+        error={errors.githubHandle?.message}
       >
         <div className={styles.prefixInput}>
           <span className={styles.prefix}>github.com/</span>
           <input
             className={styles.inputAffix}
             {...register('githubHandle')}
+            aria-invalid={Boolean(errors.githubHandle)}
             placeholder="your-username"
+            maxLength={39}
           />
         </div>
       </FieldGroup>
@@ -115,10 +127,12 @@ export const ResumeSection = ({
             Portfolio <span className={styles.optionalTag}>Optional</span>
           </>
         }
+        error={errors.portfolioUrl?.message}
       >
         <FormInput
           type="url"
           {...register('portfolioUrl')}
+          aria-invalid={Boolean(errors.portfolioUrl)}
           placeholder="https://yourportfolio.com"
         />
       </FieldGroup>

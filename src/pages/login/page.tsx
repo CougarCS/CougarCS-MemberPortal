@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
+import { AuthLayout } from '../../components/AuthLayout/AuthLayout';
 import type { AuthMode } from '../../components/AuthLayout/AuthLayout';
 import { supabase } from '../../lib/supabase';
+import authStyles from '../../components/AuthLayout/AuthLayout.module.css';
 import styles from './page.module.css';
 
 type LoginFormValues = {

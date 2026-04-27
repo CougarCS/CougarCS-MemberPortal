@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import styles from './BasicInfoSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
@@ -25,26 +25,27 @@ const AboutMeCharCount = () => {
 
 export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { control, register } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const headshotUrl = useWatch({ control, name: 'headshotUrl' }) ?? '';
   const headshotFile = useWatch({ control, name: 'headshotFile' });
-  const [previewUrl, setPreviewUrl] = useState('');
+  const objectUrl = useMemo(() => {
+    return headshotFile ? URL.createObjectURL(headshotFile) : '';
+  }, [headshotFile]);
 
   useEffect(() => {
-    if (!headshotFile) {
-      setPreviewUrl(headshotUrl);
-      return;
-    }
-
-    const url = URL.createObjectURL(headshotFile);
-    setPreviewUrl(url);
-
     return () => {
-      URL.revokeObjectURL(url);
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
     };
-  }, [headshotFile, headshotUrl]);
+  }, [objectUrl]);
 
   const hasHeadshot = Boolean(headshotFile || headshotUrl);
+  const previewUrl = objectUrl || headshotUrl;
 
   return (
     <SectionShell
@@ -74,6 +75,9 @@ export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }
             <br />
             (max file size 2 MB)
           </p>
+          {errors.headshotFile?.message && (
+            <p className={styles.fileError}>{errors.headshotFile.message}</p>
+          )}
           <OutlineButton
             type="button"
             disabled={isSaving}
@@ -98,11 +102,19 @@ export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }
       </div>
 
       <FieldRow>
-        <FieldGroup label="First Name">
-          <FormInput {...register('firstName')} />
+        <FieldGroup label="First Name" error={errors.firstName?.message}>
+          <FormInput
+            {...register('firstName')}
+            aria-invalid={Boolean(errors.firstName)}
+            maxLength={100}
+          />
         </FieldGroup>
-        <FieldGroup label="Last Name">
-          <FormInput {...register('lastName')} />
+        <FieldGroup label="Last Name" error={errors.lastName?.message}>
+          <FormInput
+            {...register('lastName')}
+            aria-invalid={Boolean(errors.lastName)}
+            maxLength={100}
+          />
         </FieldGroup>
       </FieldRow>
 
@@ -110,8 +122,14 @@ export const BasicInfoSection = ({ isSaving, saveState, onHeadshotFile, onSave }
         <FormInput type="email" {...register('email')} disabled />
       </FieldGroup>
 
-      <FieldGroup label="About me">
-        <textarea className={styles.textarea} rows={5} maxLength={1000} {...register('aboutMe')} />
+      <FieldGroup label="About me" error={errors.aboutMe?.message}>
+        <textarea
+          className={styles.textarea}
+          rows={5}
+          maxLength={1000}
+          aria-invalid={Boolean(errors.aboutMe)}
+          {...register('aboutMe')}
+        />
         <AboutMeCharCount />
       </FieldGroup>
     </SectionShell>

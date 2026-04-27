@@ -27,6 +27,14 @@
   color: var(--neutral-grey);
 }
 
+.uploadError {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--cougar-red);
+  line-height: 1.35;
+}
+
 .uploadFileName {
   margin: 0;
   font-size: 0.875rem;

@@ -11,3 +11,30 @@
   color: var(--text-h);
   letter-spacing: 0.01em;
 }
+
+.control {
+  min-width: 0;
+}
+
+.control[data-invalid='true'] input,
+.control[data-invalid='true'] select,
+.control[data-invalid='true'] textarea,
+.control[data-invalid='true'] > div {
+  border-color: var(--cougar-red);
+}
+
+.control[data-invalid='true'] input:focus,
+.control[data-invalid='true'] select:focus,
+.control[data-invalid='true'] textarea:focus,
+.control[data-invalid='true'] > div:focus-within {
+  border-color: var(--cougar-red);
+  box-shadow: 0 0 0 3px var(--cougar-red-light);
+}
+
+.errorText {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--cougar-red);
+  line-height: 1.35;
+}

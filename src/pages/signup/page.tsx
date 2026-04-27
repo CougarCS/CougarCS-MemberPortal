@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
-import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
+import { AuthLayout } from '../../components/AuthLayout/AuthLayout';
 import { supabase } from '../../lib/supabase';
+import authStyles from '../../components/AuthLayout/AuthLayout.module.css';
 
 type SignupFormValues = {
   email: string;

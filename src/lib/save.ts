@@ -95,7 +95,7 @@ export const saveLocation = async (data: {
   return (
     (await apiPatch('/api/profile/location', {
       city: data.city || null,
-      state: data.state || null,
+      state: data.state ? data.state.toUpperCase() : null,
       zip: data.zip || null,
       usWorkAuth: data.authorizedToWork,
     })) !== null

@@ -10,7 +10,10 @@ interface Props {
 }
 
 export const SkillsSection = ({ saveState, onSave }: Props) => {
-  const { control } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const { field } = useController({ name: 'skills', control });
 
   return (
@@ -21,7 +24,7 @@ export const SkillsSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <FieldGroup label="Skills">
+      <FieldGroup label="Skills" error={errors.skills?.message}>
         <SkillCombobox
           selected={field.value ?? []}
           onChange={(skills: Skill[]) => field.onChange(skills)}

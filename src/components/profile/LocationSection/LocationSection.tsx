@@ -13,7 +13,11 @@ interface Props {
 }
 
 export const LocationSection = ({ saveState, onSave }: Props) => {
-  const { register, control } = useFormContext<ProfileFormValues>();
+  const {
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const { field: authField } = useController({ name: 'authorizedToWork', control });
 
   return (
@@ -25,16 +29,31 @@ export const LocationSection = ({ saveState, onSave }: Props) => {
       onSave={onSave}
     >
       <div className={styles.threeCol}>
-        <FieldGroup label="City">
-          <FormInput {...register('city')} placeholder="Houston" />
+        <FieldGroup label="City" error={errors.city?.message}>
+          <FormInput
+            {...register('city')}
+            aria-invalid={Boolean(errors.city)}
+            placeholder="Houston"
+            maxLength={100}
+          />
         </FieldGroup>
 
-        <FieldGroup label="State">
-          <FormInput {...register('state')} placeholder="TX" maxLength={2} />
+        <FieldGroup label="State" error={errors.state?.message}>
+          <FormInput
+            {...register('state')}
+            aria-invalid={Boolean(errors.state)}
+            placeholder="TX"
+            maxLength={2}
+          />
         </FieldGroup>
 
-        <FieldGroup label="Zip Code">
-          <FormInput {...register('zip')} placeholder="77004" maxLength={10} />
+        <FieldGroup label="Zip Code" error={errors.zip?.message}>
+          <FormInput
+            {...register('zip')}
+            aria-invalid={Boolean(errors.zip)}
+            placeholder="77004"
+            maxLength={10}
+          />
         </FieldGroup>
       </div>
 

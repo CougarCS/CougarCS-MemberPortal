@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import styles from './page.module.css';
 import { PageLayout } from '../../components/PageLayout/PageLayout';
 import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { ProfileNav } from '../../components/profile/ProfileNav/ProfileNav';
-import type { SectionId } from '../../components/profile/ProfileNav/ProfileNav';
+import type { SectionId } from '../../components/profile/ProfileNav/profileNavConfig';
 import { FIELD_TO_SECTION, DEFAULT_VALUES } from '../../lib/profileConfig';
 import { BasicInfoSection } from '../../components/profile/BasicInfoSection/BasicInfoSection';
 import { EducationSection } from '../../components/profile/EducationSection/EducationSection';
@@ -25,11 +27,27 @@ import {
 import { LocationSection } from '../../components/profile/LocationSection/LocationSection';
 import { IdentitiesSection } from '../../components/profile/IdentitiesSection/IdentitiesSection';
 import { SkillsSection } from '../../components/profile/SkillsSection/SkillsSection';
+import { applyValidationResult } from '../../utils/formValidation';
+import { getProfileSectionValidation } from '../../utils/profileSectionValidation';
+import { queryKeys, queryStaleTimes } from '../../lib/queryClient';
+
+const formatGpa = (gpa: string) => {
+  const value = Number(gpa);
+
+  return gpa.trim() && Number.isFinite(value) ? value.toFixed(2) : '';
+};
+
+const fetchProfile = async () => {
+  const data = await loadProfile();
+
+  if (!data) {
+    throw new Error('Failed to load profile.');
+  }
+
+  return data;
+};
 
 export const ProfilePage = () => {
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [profileError, setProfileError] = useState(false);
-
   const [saveStates, setSaveStates] = useState<Record<string, SaveState>>({
     'basic-information': 'idle',
     education: 'idle',
@@ -66,9 +84,19 @@ export const ProfilePage = () => {
   );
 
   const form = useForm<ProfileFormValues>({ defaultValues: DEFAULT_VALUES });
-  const { subscribe, getValues, setValue, reset } = form;
+  const { subscribe, getValues, setValue, reset, setError, clearErrors } = form;
+  const {
+    formState: { isDirty },
+  } = form;
+  const queryClient = useQueryClient();
   const initializedRef = useRef(false);
   const suppressSaveTrackingRef = useRef(false);
+
+  const profileQuery = useQuery({
+    queryKey: queryKeys.profile,
+    queryFn: fetchProfile,
+    staleTime: queryStaleTimes.profile,
+  });
 
   const runWithoutSaveTracking = useCallback((fn: () => void) => {
     suppressSaveTrackingRef.current = true;
@@ -80,23 +108,65 @@ export const ProfilePage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const data = await loadProfile();
+  const invalidateProfile = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+  }, [queryClient]);
 
-      if (!data) {
-        setProfileError(false);
-        setProfileLoading(false);
-        return;
+  const basicInfoMutation = useMutation({
+    mutationFn: saveBasicInfo,
+  });
+
+  const educationMutation = useMutation({
+    mutationFn: saveEducation,
+  });
+
+  const resumeMutation = useMutation({
+    mutationFn: saveResumeLinks,
+  });
+
+  const skillsMutation = useMutation({
+    mutationFn: saveSkills,
+  });
+
+  const workPrefsMutation = useMutation({
+    mutationFn: saveWorkPrefs,
+  });
+
+  const locationMutation = useMutation({
+    mutationFn: saveLocation,
+  });
+
+  const identitiesMutation = useMutation({
+    mutationFn: saveIdentities,
+  });
+
+  const validateCurrentSection = useCallback(
+    (section: string) => {
+      const sectionValidation = getProfileSectionValidation(section, getValues());
+
+      if (!sectionValidation) {
+        return true;
       }
 
-      reset(data);
-      initializedRef.current = true;
-      setProfileLoading(false);
-    };
+      return applyValidationResult({ ...sectionValidation, clearErrors, setError });
+    },
+    [clearErrors, getValues, setError],
+  );
 
-    fetchProfile();
-  }, [reset]);
+  useEffect(() => {
+    if (!profileQuery.data) {
+      return;
+    }
+
+    if (initializedRef.current && isDirty) {
+      return;
+    }
+
+    runWithoutSaveTracking(() => {
+      reset(profileQuery.data);
+    });
+    initializedRef.current = true;
+  }, [isDirty, profileQuery.data, reset, runWithoutSaveTracking]);
 
   useEffect(() => {
     const unsubscribe = subscribe({
@@ -106,26 +176,29 @@ export const ProfilePage = () => {
           return;
         }
 
+        clearErrors(name as FieldPath<ProfileFormValues>);
+
         const section = FIELD_TO_SECTION[name.split('.')[0]];
         if (section) {
           setSaveState(section, 'unsaved');
+          validateCurrentSection(section);
         }
       },
     });
 
     return unsubscribe;
-  }, [subscribe, setSaveState]);
+  }, [clearErrors, subscribe, setSaveState, validateCurrentSection]);
 
   const scrollToSection = (id: SectionId) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleHeadshotFile = (file: File) => {
-    setValue('headshotFile', file);
+    setValue('headshotFile', file, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleResumeFile = (file: File) => {
-    setValue('resumeFile', file);
+    setValue('resumeFile', file, { shouldDirty: true, shouldTouch: true });
   };
 
   const handleResumeDownload = () => {
@@ -136,13 +209,25 @@ export const ProfilePage = () => {
   };
 
   const handleSaveBasicInfo = () => {
+    if (!validateCurrentSection('basic-information')) {
+      return;
+    }
+
     return doSave('basic-information', async () => {
       const { firstName, lastName, aboutMe, headshotFile } = getValues();
-      const result = await saveBasicInfo({ firstName, lastName, aboutMe, headshotFile });
+      const result = await basicInfoMutation.mutateAsync({
+        firstName,
+        lastName,
+        aboutMe,
+        headshotFile,
+      });
 
       if (!result) {
         return false;
       }
+
+      invalidateProfile();
+      queryClient.invalidateQueries({ queryKey: queryKeys.me });
 
       runWithoutSaveTracking(() => {
         if (result.headshotUrl) {
@@ -157,16 +242,38 @@ export const ProfilePage = () => {
   };
 
   const handleSaveEducation = () => {
-    return doSave('education', () => {
+    if (!validateCurrentSection('education')) {
+      return;
+    }
+
+    return doSave('education', async () => {
       const { major, graduationYear, graduationMonth, gpa } = getValues();
-      return saveEducation({ major, graduationYear, graduationMonth, gpa });
+      const ok = await educationMutation.mutateAsync({
+        major,
+        graduationYear,
+        graduationMonth,
+        gpa,
+      });
+
+      if (ok) {
+        invalidateProfile();
+        runWithoutSaveTracking(() => {
+          setValue('gpa', formatGpa(gpa));
+        });
+      }
+
+      return ok;
     });
   };
 
   const handleSaveResumeLinks = () => {
+    if (!validateCurrentSection('resume')) {
+      return;
+    }
+
     return doSave('resume', async () => {
       const { linkedinHandle, githubHandle, portfolioUrl, resumeFile } = getValues();
-      const result = await saveResumeLinks({
+      const result = await resumeMutation.mutateAsync({
         linkedinUrl: linkedinHandle,
         githubUrl: githubHandle,
         portfolioUrl,
@@ -176,6 +283,8 @@ export const ProfilePage = () => {
       if (!result) {
         return false;
       }
+
+      invalidateProfile();
 
       runWithoutSaveTracking(() => {
         if (result.resumeUrl) {
@@ -190,35 +299,80 @@ export const ProfilePage = () => {
   };
 
   const handleSaveSkills = () => {
+    if (!validateCurrentSection('skills')) {
+      return;
+    }
+
     return doSave('skills', () => {
-      return saveSkills(getValues('skills'));
+      return skillsMutation.mutateAsync(getValues('skills')).then((ok) => {
+        if (ok) {
+          invalidateProfile();
+        }
+
+        return ok;
+      });
     });
   };
 
   const handleSaveWorkPrefs = () => {
+    if (!validateCurrentSection('work-preferences')) {
+      return;
+    }
+
     return doSave('work-preferences', () => {
       const { opportunities, openToRelocate, workEnvironments } = getValues();
-      return saveWorkPrefs({ opportunities, openToRelocate, workEnvironments });
+      return workPrefsMutation
+        .mutateAsync({ opportunities, openToRelocate, workEnvironments })
+        .then((ok) => {
+          if (ok) {
+            invalidateProfile();
+          }
+
+          return ok;
+        });
     });
   };
 
   const handleSaveLocation = () => {
+    if (!validateCurrentSection('location')) {
+      return;
+    }
+
     return doSave('location', () => {
       const { city, state, zip, authorizedToWork } = getValues();
-      return saveLocation({ city, state, zip, authorizedToWork });
+      return locationMutation.mutateAsync({ city, state, zip, authorizedToWork }).then((ok) => {
+        if (ok) {
+          invalidateProfile();
+          runWithoutSaveTracking(() => {
+            setValue('state', state.toUpperCase());
+          });
+        }
+
+        return ok;
+      });
     });
   };
 
   const handleSaveIdentities = () => {
+    if (!validateCurrentSection('personal-identities')) {
+      return;
+    }
+
     return doSave('personal-identities', () => {
       const { gender, ethnicities } = getValues();
-      return saveIdentities({ gender, ethnicities });
+      return identitiesMutation.mutateAsync({ gender, ethnicities }).then((ok) => {
+        if (ok) {
+          invalidateProfile();
+        }
+
+        return ok;
+      });
     });
   };
 
-  const mainComponent = profileError ? (
+  const mainComponent = profileQuery.isError ? (
     <p style={{ padding: '2rem' }}>Failed to load profile. Please refresh the page.</p>
-  ) : profileLoading ? (
+  ) : profileQuery.isLoading ? (
     <p style={{ padding: '2rem' }}>Loading...</p>
   ) : (
     <div className={styles.body}>

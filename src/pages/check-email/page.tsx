@@ -1,5 +1,6 @@
-import { AuthLayout, authStyles } from '../../components/AuthLayout/AuthLayout';
+import { AuthLayout } from '../../components/AuthLayout/AuthLayout';
 import emailIcon from '../../assets/email.svg';
+import authStyles from '../../components/AuthLayout/AuthLayout.module.css';
 import styles from './page.module.css';
 
 export const CheckEmailPage = () => {

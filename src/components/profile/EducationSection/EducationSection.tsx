@@ -12,7 +12,10 @@ interface Props {
 }
 
 export const EducationSection = ({ saveState, onSave }: Props) => {
-  const { register } = useFormContext<ProfileFormValues>();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
 
   return (
     <SectionShell
@@ -22,22 +25,31 @@ export const EducationSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <FieldGroup label="Major">
-        <FormInput {...register('major')} placeholder="e.g. Computer Science" />
+      <FieldGroup label="Major" error={errors.major?.message}>
+        <FormInput
+          {...register('major')}
+          aria-invalid={Boolean(errors.major)}
+          placeholder="e.g. Computer Science"
+          maxLength={100}
+        />
       </FieldGroup>
 
       <FieldRow>
-        <FieldGroup label="Graduation Year">
+        <FieldGroup label="Graduation Year" error={errors.graduationYear?.message}>
           <FormInput
-            type="number"
-            min={2000}
-            max={2040}
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
             placeholder="2026"
+            aria-invalid={Boolean(errors.graduationYear)}
             {...register('graduationYear')}
           />
         </FieldGroup>
-        <FieldGroup label="Graduation Month">
-          <FormSelect {...register('graduationMonth')}>
+        <FieldGroup label="Graduation Month" error={errors.graduationMonth?.message}>
+          <FormSelect
+            {...register('graduationMonth')}
+            aria-invalid={Boolean(errors.graduationMonth)}
+          >
             <option value="">Select month</option>
             {MONTHS.map((m) => (
               <option key={m} value={m}>
@@ -48,13 +60,14 @@ export const EducationSection = ({ saveState, onSave }: Props) => {
         </FieldGroup>
       </FieldRow>
 
-      <FieldGroup label="GPA">
+      <FieldGroup label="GPA" error={errors.gpa?.message}>
         <FormInput
           type="number"
           min={0}
           max={4}
           step={0.01}
           placeholder="e.g. 3.5"
+          aria-invalid={Boolean(errors.gpa)}
           {...register('gpa')}
         />
       </FieldGroup>

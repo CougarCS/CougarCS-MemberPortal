@@ -13,7 +13,10 @@ interface Props {
 }
 
 export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
-  const { control } = useFormContext<ProfileFormValues>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<ProfileFormValues>();
   const { field: oppField } = useController({ name: 'opportunities', control });
   const { field: relocateField } = useController({ name: 'openToRelocate', control });
   const { field: envField } = useController({ name: 'workEnvironments', control });
@@ -43,7 +46,10 @@ export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
       saveState={saveState}
       onSave={onSave}
     >
-      <FieldGroup label="What kind of opportunities are you seeking? (Select all that apply)">
+      <FieldGroup
+        label="What kind of opportunities are you seeking? (Select all that apply)"
+        error={errors.opportunities?.message}
+      >
         <PillGroup>
           {OPPORTUNITY_TYPES.map((o) => (
             <Pill
@@ -62,7 +68,10 @@ export const WorkPrefsSection = ({ saveState, onSave }: Props) => {
         <YesNo value={relocateField.value} onChange={relocateField.onChange} />
       </InlineRow>
 
-      <FieldGroup label="What work environment(s) are you interested in? (Select all that apply)">
+      <FieldGroup
+        label="What work environment(s) are you interested in? (Select all that apply)"
+        error={errors.workEnvironments?.message}
+      >
         <PillGroup>
           {WORK_ENVIRONMENTS.map((env) => (
             <Pill

@@ -48,11 +48,18 @@ interface ApiProfile {
   experiences: ApiExperience[];
 }
 
+const uniqueSkills = (skills: Skill[]): Skill[] => {
+  return Array.from(new Map(skills.map((skill) => [skill.id, skill])).values());
+};
+
 export const loadProfile = async (): Promise<ProfileFormValues | null> => {
   const raw = await apiGet<ApiProfile>('/api/profile');
   if (!raw) {
     return null;
   }
+
+  const experienceSkills = (raw.experiences ?? []).flatMap((e) => e.skills ?? []);
+  const allSkills = uniqueSkills([...(raw.skills ?? []), ...experienceSkills]);
 
   return {
     firstName: raw.firstName ?? '',
@@ -64,8 +71,8 @@ export const loadProfile = async (): Promise<ProfileFormValues | null> => {
     major: raw.major ?? '',
     graduationYear: raw.graduationYear?.toString() ?? '',
     graduationMonth: monthIntToName(raw.graduationMonth),
-    gpa: raw.gpa?.toString() ?? '',
-    skills: raw.skills ?? [],
+    gpa: raw.gpa == null ? '' : raw.gpa.toFixed(2),
+    skills: allSkills,
     linkedinHandle: raw.linkedinUrl ?? '',
     githubHandle: raw.githubUrl ?? '',
     portfolioUrl: raw.portfolioUrl ?? '',
@@ -105,4 +112,15 @@ export const loadProfile = async (): Promise<ProfileFormValues | null> => {
 export const loadAllSkills = async (): Promise<Skill[]> => {
   const data = await apiGet<Skill[]>('/api/skills');
   return data ?? [];
+};
+
+export interface ApiMe {
+  firstName: string;
+  lastName: string;
+  email: string;
+  headshotUrl: string | null;
+}
+
+export const loadMe = async (): Promise<ApiMe | null> => {
+  return apiGet<ApiMe>('/api/me');
 };
