@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../context/useAuth';
 import { loadMe } from '../../lib/profile';
+import { queryKeys, queryStaleTimes } from '../../lib/queryClient';
 import menuIcon from '../../assets/icon-menu.svg';
 import styles from './Navbar.module.css';
 import { UserDropdown } from './UserDropdown/UserDropdown';
@@ -9,33 +11,30 @@ import { UserDropdown } from './UserDropdown/UserDropdown';
 const NAV_LINKS = [{ label: 'Home', href: '/home' }];
 
 const DROPDOWN_NAV = [{ label: 'Profile', href: '/profile' }];
+const FALLBACK_NAME = 'Vultorz';
+const FALLBACK_HEADSHOT =
+  'https://yzqdfdzetgwvgxxpulys.supabase.co/storage/v1/object/public/event-flyers/8e4a9032-f17a-4b65-b773-593346ea05c0.png';
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [displayName, setDisplayName] = useState('Vultorz');
-  const [headshotUrl, setHeadshotUrl] = useState(
-    'https://yzqdfdzetgwvgxxpulys.supabase.co/storage/v1/object/public/event-flyers/8e4a9032-f17a-4b65-b773-593346ea05c0.png',
-  );
-
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, signOut } = useAuth();
 
-  useEffect(() => {
-    loadMe().then((data) => {
-      if (!data) {
-        return;
-      }
+  const { data: me } = useQuery({
+    queryKey: queryKeys.me,
+    queryFn: loadMe,
+    staleTime: queryStaleTimes.me,
+    enabled: Boolean(user),
+  });
 
-      setDisplayName(`${data.firstName} ${data.lastName}`.trim());
-
-      if (data.headshotUrl) {
-        setHeadshotUrl(data.headshotUrl);
-      }
-    });
-  }, []);
+  const displayName = me ? `${me.firstName} ${me.lastName}`.trim() || FALLBACK_NAME : FALLBACK_NAME;
+  const headshotUrl = me?.headshotUrl || FALLBACK_HEADSHOT;
 
   const handleSignOut = async () => {
     await signOut();
+    queryClient.removeQueries({ queryKey: queryKeys.me });
+    queryClient.removeQueries({ queryKey: queryKeys.profile });
     navigate('/login');
   };
 

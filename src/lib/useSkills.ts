@@ -1,45 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { loadAllSkills } from './profile';
+import { queryKeys, queryStaleTimes } from './queryClient';
 import type { Skill } from '../utils/types';
 
-let cache: Skill[] | null = null;
-let inFlight: Promise<Skill[]> | null = null;
-
 export const useSkills = (): Skill[] => {
-  const [skills, setSkills] = useState<Skill[]>(cache ?? []);
+  const { data = [] } = useQuery({
+    queryKey: queryKeys.skills,
+    queryFn: loadAllSkills,
+    staleTime: queryStaleTimes.skills,
+  });
 
-  useEffect(() => {
-    let active = true;
-
-    if (cache) {
-      setSkills(cache);
-      return;
-    }
-
-    const fetchSkills = async () => {
-      try {
-        inFlight ??= loadAllSkills().finally(() => {
-          inFlight = null;
-        });
-        const data = await inFlight;
-        cache = data;
-
-        if (active) {
-          setSkills(data);
-        }
-      } catch {
-        if (active) {
-          setSkills([]);
-        }
-      }
-    };
-
-    fetchSkills();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  return skills;
+  return data;
 };

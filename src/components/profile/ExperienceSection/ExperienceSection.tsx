@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useController, useFormContext } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createExperience, updateExperience, deleteExperience } from '../../../lib/save';
+import { queryKeys } from '../../../lib/queryClient';
 import styles from './ExperienceSection.module.css';
 import { SectionShell } from '../SectionShell/SectionShell';
 import { ExperienceForm } from './ExperienceForm/ExperienceForm';
@@ -16,11 +18,24 @@ export const ExperienceSection = () => {
   const { control, getValues, setValue } = useFormContext<ProfileFormValues>();
   const { field } = useController({ name: 'experiences', control });
   const experiences: Experience[] = field.value ?? [];
+  const queryClient = useQueryClient();
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formInitial, setFormInitial] = useState<Omit<Experience, 'id'> | undefined>();
   const [opState, setOpState] = useState<'idle' | 'saving' | 'error'>('idle');
+
+  const createExperienceMutation = useMutation({
+    mutationFn: createExperience,
+  });
+  const updateExperienceMutation = useMutation({
+    mutationFn: ({ id, draft }: { id: string; draft: Omit<Experience, 'id'> }) => {
+      return updateExperience(id, draft);
+    },
+  });
+  const deleteExperienceMutation = useMutation({
+    mutationFn: deleteExperience,
+  });
 
   const openAdd = () => {
     setFormInitial(undefined);
@@ -75,23 +90,27 @@ export const ExperienceSection = () => {
     };
 
     if (editingId) {
-      const ok = await updateExperience(editingId, draft);
+      const ok = await updateExperienceMutation.mutateAsync({ id: editingId, draft });
       if (!ok) {
         setOpState('error');
         return;
       }
-      field.onChange(
-        experiences.map((e) => (e.id === editingId ? { ...draft, id: editingId } : e)),
+      const updatedExperiences = experiences.map((e) =>
+        e.id === editingId ? { ...draft, id: editingId } : e,
       );
+      field.onChange(updatedExperiences);
       mergeDraftSkillsIntoProfile();
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
     } else {
-      const created = await createExperience(draft);
+      const created = await createExperienceMutation.mutateAsync(draft);
       if (!created) {
         setOpState('error');
         return;
       }
-      field.onChange([...experiences, created]);
+      const updatedExperiences = [...experiences, created];
+      field.onChange(updatedExperiences);
       mergeDraftSkillsIntoProfile();
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
     }
     setShowForm(false);
     setEditingId(null);
@@ -99,9 +118,11 @@ export const ExperienceSection = () => {
   };
 
   const handleDelete = async (id: string) => {
-    const ok = await deleteExperience(id);
+    const ok = await deleteExperienceMutation.mutateAsync(id);
     if (ok) {
-      field.onChange(experiences.filter((e) => e.id !== id));
+      const updatedExperiences = experiences.filter((e) => e.id !== id);
+      field.onChange(updatedExperiences);
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
     }
   };
 
